@@ -30,7 +30,7 @@ export default function AlterarUsuario() {
 
     async function fetchUser() {
       try {
-        const res = await fetch("http://localhost:1880/usuarios-id", {
+        const res = await fetch("http://localhost:1880/usuario-id", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ uuid }),

@@ -29,7 +29,7 @@ export default function Usuario() {
       }
 
       try {
-        const res = await fetch("http://localhost:1880/usuarios", {
+        const res = await fetch("http://localhost:1880/listar-usuarios", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -44,8 +44,6 @@ export default function Usuario() {
         const data = await res.json();
         setUsuarios(data);
 
-        console.log(data)
-
       } catch (err) {
         console.error(err);
       }
@@ -58,8 +56,33 @@ export default function Usuario() {
     navigate(`/usuario/editar/${uuid}`);
   }
 
-  function handleExcluir(uuid: string) {
+  async function handleExcluir(uuid: string) {
     if (!window.confirm("Confirma exclusão desse usuário?")) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:1880/deletar-usuario-id", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ uuid }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Falha ao deletar usuário.");
+      }
+
+      setUsuarios((prev) => prev.filter((u) => u.uuid !== uuid));
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (
@@ -89,9 +112,9 @@ export default function Usuario() {
               <tr key={user.uuid}>
                 <td>{user.name}</td>
                 <td>{user.password}</td>
-                <td>{user.isActived ? "Sim" : "Não"}</td>
-                <td>{user.isRoot ? "Sim" : "Não"}</td>
-                <td>{user.roles.join(", ")}</td>
+                <td>{user.isActived}</td>
+                <td>{user.isRoot}</td>
+                <td>{(user.roles || []).join(", ")}</td>
                 <td>{new Date(user.creationDate).toLocaleString()}</td>
                 <td>{new Date(user.updateDate || user.creationDate).toLocaleString()}</td>
                 <td>

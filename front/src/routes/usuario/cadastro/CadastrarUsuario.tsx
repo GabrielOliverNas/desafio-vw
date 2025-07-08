@@ -3,10 +3,11 @@ import Sidebar from "../../../componentes/sidebar/Sidebar";
 import Navbar from "../../../componentes/navbar/Navibar";
 import { Toast } from "../../../componentes/utils/Toast";
 import "../Usuario.css";
+import { useNavigate } from "react-router-dom";
 
 export default function CadastrarUsuario() {
-  const [nome, setNome] = useState("");
-  const [senha, setSenha] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPasswor] = useState("");
   const [isAdminFlag, setIsAdminFlag] = useState(false);
   const [isActiveFlag, setIsActiveFlag] = useState(true);
   const [permissoes, setPermissoes] = useState<string[]>([]);
@@ -14,6 +15,8 @@ export default function CadastrarUsuario() {
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState<"success" | "error">("success");
   const [showToast, setShowToast] = useState(false);
+
+  const navigate = useNavigate();
 
   function togglePermissao(role: string) {
     setPermissoes((prev) =>
@@ -25,17 +28,30 @@ export default function CadastrarUsuario() {
     e.preventDefault();
 
     const payload = {
-      name: nome,
-      password: senha,
+      name: name,
+      password: password,
       isActived: isActiveFlag ? "true" : "false",
       isRoot: isAdminFlag ? "true" : "false",
       roles: permissoes,
     };
 
+    console.log(payload)
+
     try {
-      const res = await fetch("http://localhost:1880/usuarios", {
+
+      const token = localStorage.getItem('token')
+
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      const res = await fetch("http://localhost:1880/inserir-usuario", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(payload),
       });
 
@@ -44,8 +60,8 @@ export default function CadastrarUsuario() {
         setToastType("success");
         setShowToast(true);
 
-        setNome("");
-        setSenha("");
+        setName("");
+        setPasswor("");
         setIsAdminFlag(false);
         setIsActiveFlag(true);
         setPermissoes([]);
@@ -68,24 +84,24 @@ export default function CadastrarUsuario() {
       <div className="usuario">
         <form onSubmit={handleSubmit}>
           <label>
-            Nome:
+            Name:
             <input
               type="text"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
               placeholder="Digite o nome"
             />
           </label>
 
           <label>
-            Senha:
+            Password:
             <input
               type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
+              value={password}
+              onChange={(e) => setPasswor(e.target.value)}
               required
-              placeholder="Digite a senha"
+              placeholder="Digite o password"
             />
           </label>
 

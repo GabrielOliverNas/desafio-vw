@@ -2,7 +2,8 @@ import { useState } from "react";
 import Sidebar from "../../../componentes/sidebar/Sidebar";
 import Navbar from "../../../componentes/navbar/Navibar";
 import { Toast } from "../../../componentes/utils/Toast";
-import "../../usuario/Usuario.css"; // Reutilizando o mesmo estilo visual
+import "./CadastrarVeiculo.css"; // Reaproveitando o estilo do usuário
+import { useNavigate } from "react-router-dom";
 
 export default function CadastrarVeiculo() {
   const [modelo, setModelo] = useState("");
@@ -14,26 +15,36 @@ export default function CadastrarVeiculo() {
   const [toastType, setToastType] = useState<"success" | "error">("success");
   const [showToast, setShowToast] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const payload = {
-      modelo,
-      cor,
-      ano,
-      fotoUrl,
+      modelName: modelo,
+      colorName: cor,
+      year: ano,
+      imagePath: [fotoUrl],
+      creationUserName: "nome logado JWT",
     };
 
     try {
-      const res = await fetch("http://localhost:1880/veiculos", {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      const res = await fetch("http://localhost:1880/inserir-veiculo", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(payload),
       });
 
-      const text = await res.text();
-      if (text.trim().startsWith("{")) {
-        const data = JSON.parse(text);
+      if (res.ok) {
         setToastMessage("Veículo cadastrado com sucesso!");
         setToastType("success");
         setShowToast(true);
@@ -43,7 +54,7 @@ export default function CadastrarVeiculo() {
         setAno(new Date().getFullYear());
         setFotoUrl("");
       } else {
-        throw new Error("Resposta inválida do servidor");
+        throw new Error();
       }
     } catch (err) {
       console.error(err);
@@ -60,58 +71,54 @@ export default function CadastrarVeiculo() {
       <Navbar />
       <Sidebar />
       <div className="usuario">
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
-          <div style={{ flexGrow: 1 }}>
-            <label>
-              Modelo:
-              <input
-                type="text"
-                value={modelo}
-                onChange={(e) => setModelo(e.target.value)}
-                required
-                placeholder="Digite o modelo"
-              />
-            </label>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Modelo:
+            <input
+              type="text"
+              value={modelo}
+              onChange={(e) => setModelo(e.target.value)}
+              required
+              placeholder="Digite o modelo"
+            />
+          </label>
 
-            <label>
-              Cor:
-              <input
-                type="text"
-                value={cor}
-                onChange={(e) => setCor(e.target.value)}
-                required
-                placeholder="Digite a cor"
-              />
-            </label>
+          <label>
+            Cor:
+            <input
+              type="text"
+              value={cor}
+              onChange={(e) => setCor(e.target.value)}
+              required
+              placeholder="Digite a cor"
+            />
+          </label>
 
-            <label>
-              Ano:
-              <input
-                type="number"
-                value={ano}
-                onChange={(e) => setAno(Number(e.target.value))}
-                min="1900"
-                max={new Date().getFullYear() + 1}
-                required
-                placeholder="Digite o ano"
-              />
-            </label>
+          <label>
+            Ano:
+            <input
+              type="number"
+              value={ano}
+              onChange={(e) => setAno(Number(e.target.value))}
+              min="1900"
+              max={new Date().getFullYear() + 1}
+              required
+              placeholder="Digite o ano"
+            />
+          </label>
 
-            <label>
-              URL da Foto:
-              <input
-                type="url"
-                value={fotoUrl}
-                onChange={(e) => setFotoUrl(e.target.value)}
-                placeholder="https://meuservidor.com/fotos/..."
-                required
-              />
-            </label>
-          </div>
+          <label>
+            URL da Foto:
+            <input
+              type="url"
+              value={fotoUrl}
+              onChange={(e) => setFotoUrl(e.target.value)}
+              placeholder="https://servidor.com/foto.jpg"
+              required
+            />
+          </label>
 
-          <div style={{ marginTop: "1rem", alignSelf: "flex-start" }}>
-            <button type="submit">Cadastrar Veículo</button>
-          </div>
+          <button type="submit">Cadastrar Veículo</button>
         </form>
       </div>
 

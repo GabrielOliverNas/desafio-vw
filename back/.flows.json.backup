@@ -8,11 +8,6 @@
         "env": []
     },
     {
-        "id": "flow_assets",
-        "type": "tab",
-        "label": "Serve Assets"
-    },
-    {
         "id": "07eae8f9fe820c4e",
         "type": "http in",
         "z": "e771a27fee406b2a",
@@ -22,7 +17,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 100,
-        "y": 200,
+        "y": 260,
         "wires": [
             [
                 "ef41793ff7ea5a80"
@@ -42,7 +37,7 @@
         "finalize": "",
         "libs": [],
         "x": 270,
-        "y": 200,
+        "y": 260,
         "wires": [
             [
                 "85884d926390e238"
@@ -77,7 +72,7 @@
         "maxAgeType": "num",
         "constraints": [],
         "x": 480,
-        "y": 200,
+        "y": 260,
         "wires": [
             [
                 "ee7ca56abe9406f2"
@@ -92,7 +87,7 @@
         "statusCode": "",
         "headers": {},
         "x": 880,
-        "y": 200,
+        "y": 260,
         "wires": []
     },
     {
@@ -108,7 +103,7 @@
         "finalize": "",
         "libs": [],
         "x": 690,
-        "y": 200,
+        "y": 260,
         "wires": [
             [
                 "daafb42cae8476ed"
@@ -119,13 +114,13 @@
         "id": "58d4f9ef4ce89af9",
         "type": "http in",
         "z": "e771a27fee406b2a",
-        "name": "inserindo-usuarios",
+        "name": "inserir-usuario",
         "url": "/inserir-usuario",
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 130,
-        "y": 420,
+        "x": 110,
+        "y": 480,
         "wires": [
             [
                 "2798835ee8a62017"
@@ -140,7 +135,7 @@
         "statusCode": "200",
         "headers": {},
         "x": 980,
-        "y": 420,
+        "y": 480,
         "wires": []
     },
     {
@@ -148,7 +143,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 7",
-        "func": "let payload = msg.payload;\n\nconst user = {\n    uuid: Date.now().toString(),\n    name: payload.name,\n    password: payload.password,\n    isActived: payload.isActived,\n    isRoot: payload.isRoot,\n    roles: payload.roles,\n    creationDate: new Date().toISOString()\n};\n\nlet usuarios = flow.get('users', 'file') || [];\n\nif (!Array.isArray(usuarios)) {\n    usuarios = [];\n}\n\nusuarios.push(user)\n\nflow.set('users', usuarios, 'file');\n\nreturn msg;",
+        "func": "let payload = msg.payload;\n\nif (!payload.name || !payload.password) {\n    msg.payload = { error: \"Campos obrigatórios: name, password.\" };\n    return [null, msg];\n}\n\nconst user = {\n    uuid: Date.now().toString(),\n    name: payload.name,\n    password: payload.password,\n    isActived: payload.isActived,\n    isRoot: payload.isRoot || \"false\",\n    roles: payload.roles,\n    creationDate: new Date().toISOString()\n};\n\nlet usuarios = flow.get('users', 'file') || [];\n\nif (!Array.isArray(usuarios)) {\n    usuarios = [];\n}\n\nusuarios.push(user);\n\nflow.set('users', usuarios, 'file');\n\nmsg.payload = user;\n\nreturn [msg, null];\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -156,7 +151,7 @@
         "finalize": "",
         "libs": [],
         "x": 740,
-        "y": 420,
+        "y": 480,
         "wires": [
             [
                 "ed4e5d5a240372ba"
@@ -168,15 +163,15 @@
         "type": "http in",
         "z": "e771a27fee406b2a",
         "name": "listar-usuarios",
-        "url": "/usuarios",
+        "url": "/listar-usuarios",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
         "x": 110,
-        "y": 540,
+        "y": 600,
         "wires": [
             [
-                "ca92d0cf38cc8fa1"
+                "22b91667282cd53c"
             ]
         ]
     },
@@ -188,7 +183,7 @@
         "statusCode": "200",
         "headers": {},
         "x": 980,
-        "y": 540,
+        "y": 600,
         "wires": []
     },
     {
@@ -204,7 +199,7 @@
         "finalize": "",
         "libs": [],
         "x": 740,
-        "y": 540,
+        "y": 600,
         "wires": [
             [
                 "930307daf030c5a9"
@@ -215,13 +210,13 @@
         "id": "a9ba72bed6e2feca",
         "type": "http in",
         "z": "e771a27fee406b2a",
-        "name": "deletar-usuarios",
-        "url": "/deletar-usuarios",
+        "name": "deletar-usuario-id",
+        "url": "/deletar-usuario-id",
         "method": "delete",
         "upload": false,
         "swaggerDoc": "",
         "x": 120,
-        "y": 480,
+        "y": 540,
         "wires": [
             [
                 "3a0b8b5abc860260"
@@ -236,7 +231,7 @@
         "statusCode": "200",
         "headers": {},
         "x": 980,
-        "y": 480,
+        "y": 540,
         "wires": []
     },
     {
@@ -244,7 +239,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 10",
-        "func": "flow.set('users',null, 'file');\n\nreturn msg;''",
+        "func": "let usuarios = flow.get('users', 'file') || [];\n\nif (!Array.isArray(usuarios)) {\n    usuarios = [];\n}\n\nconst uuid = msg.request.uuid;\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet u = usuarios.find(i => i.uuid === uuid);\n\nif (u) {\n    usuarios = usuarios.filter(i => i.uuid !== uuid);\n\n    flow.set('users', usuarios, 'file');\n\n    msg.payload = { success: true, message: \"Usuário removido com sucesso.\" };\n} else {\n    msg.payload = { error: \"Usuário não encontrado.\" };\n}\n\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -252,7 +247,7 @@
         "finalize": "",
         "libs": [],
         "x": 730,
-        "y": 480,
+        "y": 540,
         "wires": [
             [
                 "849b98a3bb34bf09"
@@ -273,7 +268,7 @@
         "outputs": 1,
         "rounds": "5",
         "x": 370,
-        "y": 420,
+        "y": 480,
         "wires": [
             [
                 "7660d8bc47aa36d6"
@@ -294,7 +289,9 @@
         "x": 130,
         "y": 60,
         "wires": [
-            []
+            [
+                "8b456eb5bfe06708"
+            ]
         ]
     },
     {
@@ -302,7 +299,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "table-colors",
-        "func": "const colors = [\n  { uuid: global.get('uuid').v4(), colorName: 'Preto' },\n  { uuid: global.get('uuid').v4(), colorName: 'Branco' },\n  { uuid: global.get('uuid').v4(), colorName: 'Vermelho' },\n  { uuid: global.get('uuid').v4(), colorName: 'Cinza' },\n  { uuid: global.get('uuid').v4(), colorName: 'Azul' }\n];\n\nglobal.set('colorTable', colors);\n\nmsg.payload = \"Tabela de COLORS carregada.\";\nreturn msg;",
+        "func": "const colors = [\n  { uuid: global.get('uuid').v4(), colorName: 'Preto' },\n  { uuid: global.get('uuid').v4(), colorName: 'Branco' },\n  { uuid: global.get('uuid').v4(), colorName: 'Vermelho' },\n  { uuid: global.get('uuid').v4(), colorName: 'Cinza' },\n  { uuid: global.get('uuid').v4(), colorName: 'Azul' }\n];\n\nglobal.set('colorsTable', colors);\n\nmsg.payload = \"Tabela de COLORS carregada.\";\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -339,7 +336,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "table-models",
-        "func": "const colors = [\n  { uuid: global.get('uuid').v4(), colorName: 'T-Cross' },\n  { uuid: global.get('uuid').v4(), colorName: 'Nivus' },\n  { uuid: global.get('uuid').v4(), colorName: 'Polo' },\n  { uuid: global.get('uuid').v4(), colorName: 'Virtus' },\n  { uuid: global.get('uuid').v4(), colorName: 'Saveiro' },\n  { uuid: global.get('uuid').v4(), colorName: 'Track' }\n];\n\nglobal.set('modelsTable', colors);\n\nmsg.payload = \"Tabela de MODELS carregada.\";\nreturn msg;",
+        "func": "const colors = [\n  { uuid: global.get('uuid').v4(), modelName: 'T-Cross' },\n  { uuid: global.get('uuid').v4(), modelName: 'Nivus' },\n  { uuid: global.get('uuid').v4(), modelName: 'Polo' },\n  { uuid: global.get('uuid').v4(), modelName: 'Virtus' },\n  { uuid: global.get('uuid').v4(), modelName: 'Saveiro' },\n  { uuid: global.get('uuid').v4(), modelName: 'Track' }\n];\n\nglobal.set('modelsTable', colors);\n\nmsg.payload = \"Tabela de MODELS carregada.\";\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -394,13 +391,13 @@
         "id": "bcc2e62901cb0f68",
         "type": "http in",
         "z": "e771a27fee406b2a",
-        "name": "buscar-usuario-id",
-        "url": "/usuarios-id",
+        "name": "usuario-id",
+        "url": "/usuario-id",
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 120,
-        "y": 600,
+        "x": 100,
+        "y": 660,
         "wires": [
             [
                 "efc2ecc451caab37"
@@ -415,7 +412,7 @@
         "statusCode": "200",
         "headers": {},
         "x": 980,
-        "y": 600,
+        "y": 660,
         "wires": []
     },
     {
@@ -423,7 +420,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 2",
-        "func": "let uuid = msg.request.uuid;\n\nconst usuarios = flow.get('users', 'file') || [];\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet usuario = usuarios.find(user => user.uuid === uuid);\n\nconsole.log(usuario)\n\nmsg.payload = {\n    'message': 'usuario identificado',\n    'usuario': usuario\n}\n\nreturn msg;",
+        "func": "let uuid = msg.request.uuid;\n\nconst usuarios = flow.get('users', 'file') || [];\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet usuario = usuarios.find(user => user.uuid === uuid);\n\n\nif(usuario) {\n    msg.payload = {\n        'message': 'usuario identificado',\n        'usuario': usuario\n    }\n    return msg\n}\n\nmsg.payload = {\n    'message': 'Usuario inexistente'\n}\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -431,7 +428,7 @@
         "finalize": "",
         "libs": [],
         "x": 740,
-        "y": 600,
+        "y": 660,
         "wires": [
             [
                 "fb009c7556ac4451"
@@ -442,13 +439,13 @@
         "id": "a9383d9f2e063f8e",
         "type": "http in",
         "z": "e771a27fee406b2a",
-        "name": "remover veiculos",
-        "url": "/remover-veiculos1",
+        "name": "remover-veiculo-id",
+        "url": "/remover-veiculo-id",
         "method": "delete",
         "upload": false,
         "swaggerDoc": "",
-        "x": 120,
-        "y": 820,
+        "x": 130,
+        "y": 880,
         "wires": [
             [
                 "d1f8619815780db1"
@@ -460,7 +457,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 1",
-        "func": "var authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.payload = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Token não enviado ou mal formatado\" };\n    return [null, msg];\n}",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Token não enviado ou mal formatado\" };\n    return [null, msg];\n}",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -468,45 +465,10 @@
         "finalize": "",
         "libs": [],
         "x": 300,
-        "y": 820,
+        "y": 880,
         "wires": [
             [
-                "85bfc452e7b3dab0"
-            ]
-        ]
-    },
-    {
-        "id": "85bfc452e7b3dab0",
-        "type": "jwt verify",
-        "z": "e771a27fee406b2a",
-        "name": "Validar-Geracao-JWT",
-        "algorithms": "HS256",
-        "mode": "secret",
-        "secret": "jwtSecret",
-        "secretType": "msg",
-        "publicKey": "",
-        "publicKeyType": "str",
-        "jwkid": "",
-        "jwkidType": "str",
-        "jwkurl": "",
-        "jwkurlType": "str",
-        "ignoreExpiration": "false",
-        "ignoreExpirationType": "bool",
-        "ignoreNotBefore": "true",
-        "ignoreNotBeforeType": "bool",
-        "audience": "",
-        "audienceType": "str",
-        "issuer": "",
-        "issuerType": "str",
-        "token": "payload",
-        "maxAge": "",
-        "maxAgeType": "num",
-        "constraints": [],
-        "x": 520,
-        "y": 820,
-        "wires": [
-            [
-                "6536798f2570ce67"
+                "fe527af7383f65a9"
             ]
         ]
     },
@@ -514,16 +476,16 @@
         "id": "6536798f2570ce67",
         "type": "function",
         "z": "e771a27fee406b2a",
-        "name": "Retorno-JWT",
-        "func": "flow.set('veiculo', [], 'default');\n\nreturn msg;",
+        "name": "exclusao-veiculo",
+        "func": "let veiculos = flow.get('veiculo') || [];\n\nif (!Array.isArray(veiculos)) {\n    veiculos = [];\n}\n\nconst uuid = msg.request.uuid;\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado.\" };\n    return msg;\n}\n\nconst existe = veiculos.find(v => v.uuid === uuid);\n\nconsole.log('estamos aqui', veiculos)\n\n\nif (existe) {\n    veiculos = veiculos.filter(v => v.uuid !== uuid);\n    flow.set('veiculo', veiculos);\n\n    msg.payload = { success: true, message: \"Veículo removido com sucesso.\" };\n} else {\n    msg.payload = { error: \"Veículo não encontrado.\" };\n}\n\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 730,
-        "y": 820,
+        "x": 710,
+        "y": 880,
         "wires": [
             [
                 "77d797dfad31c3fc"
@@ -543,7 +505,7 @@
         "finalize": "",
         "libs": [],
         "x": 900,
-        "y": 820,
+        "y": 880,
         "wires": [
             [
                 "8a59134bcd54faba"
@@ -558,7 +520,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1080,
-        "y": 820,
+        "y": 880,
         "wires": []
     },
     {
@@ -566,7 +528,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 5",
-        "func": "const modelsTable = global.get('modelsTable') || [];\nconst colorTable = global.get('colorTable') || [];\n\nlet veiculos = flow.get('veiculo') || [];\nlet payload = msg.request;\nlet creationDate = new Date().toISOString();\nlet updateDate = new Date().toISOString();\n\nconst modeloEncontrado = modelsTable.find(m =>\n    m.modelName.toLowerCase() === payload.model.toLowerCase());\nconst corEncontrada = colorTable.find(c =>\n    c.colorName.toLowerCase() === payload.color.toLowerCase());\n\n\nif (!Array.isArray(veiculos)) {\n    veiculos = [];\n}\n\nif ((modeloEncontrado || corEncontrada) === null || '' || undefined) {\n    msg.payload = {\n        status: 'falha no processo',\n        message: `o campo 'modeloEncontrado' ou 'corEncontrada'nao podem estar nulo`\n    };\n} else {\n    payload.model = {\n        colorName: modeloEncontrado.colorName\n    };\n\n    payload.color = {\n        colorName: corEncontrada.colorName\n    };\n\n    veiculos.push({\n        uuid: global.get('uuid').v4(),\n        creationUserName: payload.creationUserName,\n        updateUserName: payload.updateUserName,\n        creationDate: creationDate,\n        //updateDate: updateDate, quando altera\n        model: modeloEncontrado,\n        color: corEncontrada,\n        year: payload.year,\n        imagePath: payload.imagePath\n    });\n\n    // Salva de volta no contexto\n    flow.set('veiculo', veiculos);\n\n    // Resposta\n    msg.payload = {\n        status: 'sucesso',\n        total: veiculos.length\n    };\n}\n\nreturn msg;",
+        "func": "try {\n  const modelsTable = global.get('modelsTable') || [];\n  const colorTable = global.get('colorsTable') || [];\n\n  let veiculos = flow.get('veiculo') || [];\n  let request = msg.request;\n  let creationDate = new Date().toISOString();\n\n  const corEncontrada = colorTable.find(item => (item.colorName || '').toLowerCase() === request.colorName.toLowerCase());\n  const modeloEncontrado = modelsTable.find(item => (item.modelName || '').toLowerCase() === request.modelName.toLowerCase());\n\n  if (!modeloEncontrado || !corEncontrada) {\n    msg.payload = {\n      status: 'erro',\n      message: `O campo 'modeloEncontrado' ou 'corEncontrada' não podem estar nulos.`\n    };\n    return msg;\n  }\n\n  const novoVeiculo = {\n    uuid: Date.now().toString(),\n    creationUserName: request.creationUserName,\n    updateUserName: request.updateUserName,\n    creationDate: creationDate,\n    model: modeloEncontrado,\n    color: corEncontrada,\n    year: request.year,\n    imagePath: request.imagePath\n  };\n\n  veiculos.push(novoVeiculo);\n\n  console.log('asdfasd', veiculos)\n\n  flow.set('veiculo', veiculos);\n\n  msg.payload = {\n    status: 'sucesso',\n    message: \"Veículo inserido com sucesso!\",\n    total: veiculos.length,\n    veiculo: novoVeiculo\n  };\n  return msg;\n\n} catch (err) {\n  msg.payload = { status: 'erro', message: \"Erro ao inserir veículo: \" + err.message };\n  return msg;\n}\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -574,7 +536,7 @@
         "finalize": "",
         "libs": [],
         "x": 720,
-        "y": 700,
+        "y": 760,
         "wires": [
             [
                 "da434780bf5badd5"
@@ -586,12 +548,12 @@
         "type": "http in",
         "z": "e771a27fee406b2a",
         "name": "inserir-veiculo",
-        "url": "/inserir-veiculos",
+        "url": "/inserir-veiculo",
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
         "x": 110,
-        "y": 700,
+        "y": 760,
         "wires": [
             [
                 "994f2b227115dc48"
@@ -606,7 +568,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1110,
-        "y": 700,
+        "y": 760,
         "wires": []
     },
     {
@@ -622,7 +584,7 @@
         "finalize": "",
         "libs": [],
         "x": 290,
-        "y": 700,
+        "y": 760,
         "wires": [
             [
                 "fe5513e8b01be357"
@@ -657,7 +619,7 @@
         "maxAgeType": "num",
         "constraints": [],
         "x": 500,
-        "y": 700,
+        "y": 760,
         "wires": [
             [
                 "aaa8c237613f7719"
@@ -677,7 +639,7 @@
         "finalize": "",
         "libs": [],
         "x": 940,
-        "y": 700,
+        "y": 760,
         "wires": [
             [
                 "c24ce0c9eb711bba"
@@ -690,11 +652,11 @@
         "z": "e771a27fee406b2a",
         "name": "listar-veiculos",
         "url": "/listar-veiculos",
-        "method": "post",
+        "method": "get",
         "upload": false,
         "swaggerDoc": "",
         "x": 110,
-        "y": 760,
+        "y": 820,
         "wires": [
             [
                 "6c683a78c4fff1fe"
@@ -706,7 +668,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "formatar jwt",
-        "func": "var authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.payload = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Token não enviado ou mal formatado\" };\n    return [null, msg];\n}",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Token não enviado ou mal formatado\" };\n    return [null, msg];\n}",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -714,45 +676,10 @@
         "finalize": "",
         "libs": [],
         "x": 330,
-        "y": 760,
+        "y": 820,
         "wires": [
             [
-                "72d009f47c90ac7a"
-            ]
-        ]
-    },
-    {
-        "id": "72d009f47c90ac7a",
-        "type": "jwt verify",
-        "z": "e771a27fee406b2a",
-        "name": "Validar-Geracao-JWT",
-        "algorithms": "HS256",
-        "mode": "secret",
-        "secret": "jwtSecret",
-        "secretType": "msg",
-        "publicKey": "",
-        "publicKeyType": "str",
-        "jwkid": "",
-        "jwkidType": "str",
-        "jwkurl": "",
-        "jwkurlType": "str",
-        "ignoreExpiration": "false",
-        "ignoreExpirationType": "bool",
-        "ignoreNotBefore": "true",
-        "ignoreNotBeforeType": "bool",
-        "audience": "",
-        "audienceType": "str",
-        "issuer": "",
-        "issuerType": "str",
-        "token": "payload",
-        "maxAge": "",
-        "maxAgeType": "num",
-        "constraints": [],
-        "x": 580,
-        "y": 760,
-        "wires": [
-            [
-                "416ee531ccb7dcc6"
+                "7c1502a697e580f8"
             ]
         ]
     },
@@ -761,7 +688,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 6",
-        "func": "let veiculos = flow.get('veiculo') || [];\n\nif (!Array.isArray(veiculos)) {\n    veiculos = [];\n}\n\nconst page = msg.payload.page || 1;\nconst pageSize = msg.payload.pageSize || 5;\nconst sortField = msg.payload.sortField || 'modelo';\nconst sortOrder = msg.payload.sortOrder || 'asc';\n\nveiculos.sort((a, b) => {\n    if (a[sortField] < b[sortField]) return sortOrder === 'asc' ? -1 : 1;\n    if (a[sortField] > b[sortField]) return sortOrder === 'asc' ? 1 : -1;\n    return 0;\n});\n\nconst startIndex = (page - 1) * pageSize;\nconst endIndex = startIndex + pageSize;\nconst paginatedData = veiculos.slice(startIndex, endIndex);\n\nmsg.payload = {\n    page: page,\n    pageSize: pageSize,\n    total: veiculos.length,\n    data: paginatedData\n};\n\nreturn msg;",
+        "func": "let veiculos = flow.get('veiculo') || [];\n\nif (!Array.isArray(veiculos)) {\n  veiculos = [];\n}\n\nmsg.payload = veiculos;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -769,7 +696,7 @@
         "finalize": "",
         "libs": [],
         "x": 860,
-        "y": 760,
+        "y": 820,
         "wires": [
             [
                 "cd8d5dd2c1e92c9d"
@@ -784,7 +711,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1110,
-        "y": 760,
+        "y": 820,
         "wires": []
     },
     {
@@ -797,7 +724,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 110,
-        "y": 360,
+        "y": 420,
         "wires": [
             [
                 "74415834210c7a06"
@@ -809,7 +736,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 4",
-        "func": "let usuarios = flow.get('users', 'file') || [];\nlet updateDate = new Date().toISOString();\n\nif (!Array.isArray(usuarios)) {\n    usuarios = [];\n}\n\nconst uuid = msg.request.uuid;\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet u = usuarios.find(i => i.uuid === uuid);\n\nif (u) {\n    msg.request.uuid = uuid;\n    msg.request.updateDate = updateDate;\n\n    console.log(usuarios)\n    console.log(msg.requestu)\n\n    usuarios.push(msg.request);\n    flow.set('users', usuarios, 'file')\n} else {\n    msg.payload = { error: \"Usuário não encontrado\" };\n}\n\nreturn msg;",
+        "func": "let usuarios = flow.get('users', 'file') || [];\nlet updateDate = new Date().toISOString();\n\nif (!Array.isArray(usuarios)) {\n    usuarios = [];\n}\n\nlet requisicao = msg.request;\nconst uuid = requisicao.uuid;\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet u = usuarios.find(i => i.uuid === uuid);\nlet usuarioAlterado;\n\nif (u) {\n\n    requisicao.uuid = uuid;\n    requisicao.updateDate = updateDate;\n    requisicao.creationDate = u.creationDate;\n    \n    console.log('asdfasdf', requisicao)\n    console.log('asdfasdf', u)\n\n    usuarios = usuarios.filter(i => i.uuid !== uuid);\n    usuarios.push(requisicao);\n    flow.set('users', usuarios, 'file')\n} else {\n    msg.payload = { error: \"Usuário não encontrado\" };\n}\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -817,7 +744,7 @@
         "finalize": "",
         "libs": [],
         "x": 640,
-        "y": 360,
+        "y": 420,
         "wires": [
             [
                 "3176f7dc4c9017d7"
@@ -837,7 +764,7 @@
         "finalize": "",
         "libs": [],
         "x": 270,
-        "y": 360,
+        "y": 420,
         "wires": [
             [
                 "d898e96cde341d69"
@@ -872,7 +799,7 @@
         "maxAgeType": "num",
         "constraints": [],
         "x": 460,
-        "y": 360,
+        "y": 420,
         "wires": [
             [
                 "ae1a2dce88636532"
@@ -887,7 +814,7 @@
         "statusCode": "200",
         "headers": {},
         "x": 980,
-        "y": 360,
+        "y": 420,
         "wires": []
     },
     {
@@ -900,7 +827,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 90,
-        "y": 260,
+        "y": 320,
         "wires": [
             [
                 "fae8ccc85c33ef61"
@@ -912,7 +839,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 11",
-        "func": "let usuarios = flow.get('users', 'file') || [];\nlet usuarioRequest = msg.payload;\nlet usuarioBase\n\nconsole.log(usuarios)\n\nlet user = (usuarios.find(i =>\n    i.name === usuarioRequest.name && i.password === usuarioRequest.password)\n)\n\n\nif (!Array.isArray(usuarios)) {\n    usuarios = [];\n}\n\nif (!user) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Invalid credentials\" };\n    return [null, msg];\n}\n\nmsg.user = {\n    name: user.name,\n    roles: user.roles\n};\n\nreturn msg;",
+        "func": "let usuarios = flow.get('users', 'file') || [];\nlet usuarioRequest = msg.payload;\nlet usuarioBase\n\nlet user = (usuarios.find(i =>\n    i.name === usuarioRequest.name && i.password === usuarioRequest.password)\n)\n\n\nif (!Array.isArray(usuarios)) {\n    usuarios = [];\n}\n\nif (!user) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Invalid credentials\" };\n    return [null, msg];\n}\n\nmsg.user = {\n    name: user.name,\n    roles: user.roles\n};\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -920,7 +847,7 @@
         "finalize": "",
         "libs": [],
         "x": 250,
-        "y": 260,
+        "y": 320,
         "wires": [
             [
                 "4bbc06ba0a7cefc6"
@@ -935,7 +862,7 @@
         "statusCode": "",
         "headers": {},
         "x": 910,
-        "y": 260,
+        "y": 320,
         "wires": []
     },
     {
@@ -951,7 +878,7 @@
         "finalize": "",
         "libs": [],
         "x": 430,
-        "y": 260,
+        "y": 320,
         "wires": [
             [
                 "664438f386876268"
@@ -984,7 +911,7 @@
         "notBefore": "",
         "notBeforeType": "num",
         "x": 590,
-        "y": 260,
+        "y": 320,
         "wires": [
             [
                 "466fe941650891c4"
@@ -996,7 +923,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 12",
-        "func": "console.log('estamos aqui')\n\nmsg.payload = { token: msg.payload };\nreturn msg;",
+        "func": "msg.payload = { token: msg.payload };\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -1004,7 +931,7 @@
         "finalize": "",
         "libs": [],
         "x": 750,
-        "y": 260,
+        "y": 320,
         "wires": [
             [
                 "ba6d3e4576690e8d"
@@ -1024,45 +951,10 @@
         "finalize": "",
         "libs": [],
         "x": 270,
-        "y": 540,
+        "y": 580,
         "wires": [
             [
                 "266e2ac5e9ae2868"
-            ]
-        ]
-    },
-    {
-        "id": "266e2ac5e9ae2868",
-        "type": "jwt verify",
-        "z": "e771a27fee406b2a",
-        "name": "Validar-Geracao-JWT",
-        "algorithms": "HS256",
-        "mode": "secret",
-        "secret": "jwtSecret",
-        "secretType": "msg",
-        "publicKey": "",
-        "publicKeyType": "str",
-        "jwkid": "",
-        "jwkidType": "str",
-        "jwkurl": "",
-        "jwkurlType": "str",
-        "ignoreExpiration": "false",
-        "ignoreExpirationType": "bool",
-        "ignoreNotBefore": "true",
-        "ignoreNotBeforeType": "bool",
-        "audience": "",
-        "audienceType": "str",
-        "issuer": "",
-        "issuerType": "str",
-        "token": "token",
-        "maxAge": "",
-        "maxAgeType": "num",
-        "constraints": [],
-        "x": 500,
-        "y": 540,
-        "wires": [
-            [
-                "22b91667282cd53c"
             ]
         ]
     },
@@ -1079,7 +971,7 @@
         "finalize": "",
         "libs": [],
         "x": 290,
-        "y": 600,
+        "y": 660,
         "wires": [
             [
                 "2ac942dd4fafd962"
@@ -1114,7 +1006,7 @@
         "maxAgeType": "num",
         "constraints": [],
         "x": 540,
-        "y": 600,
+        "y": 660,
         "wires": [
             [
                 "b7ccf828195daa9d"
@@ -1126,7 +1018,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "Gerar-log",
-        "func": "const now = new Date().toISOString();\nconst userName = msg.payload.userName;\nconst route = \"/veiculos/inserir\";\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "func": "const now = new Date().toISOString();\n\nconst userName = msg.payload.name;\nconst route = \"/veiculos/inserir\";\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -1134,7 +1026,7 @@
         "finalize": "",
         "libs": [],
         "x": 800,
-        "y": 360,
+        "y": 420,
         "wires": [
             [
                 "2850e51dc8b3dbda"
@@ -1154,7 +1046,7 @@
         "finalize": "",
         "libs": [],
         "x": 310,
-        "y": 480,
+        "y": 540,
         "wires": [
             [
                 "faa11aa113e8e6bd"
@@ -1189,10 +1081,417 @@
         "maxAgeType": "num",
         "constraints": [],
         "x": 520,
-        "y": 480,
+        "y": 540,
         "wires": [
             [
                 "5718d44be8d4de38"
+            ]
+        ]
+    },
+    {
+        "id": "266e2ac5e9ae2868",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 500,
+        "y": 580,
+        "wires": [
+            [
+                "22b91667282cd53c"
+            ]
+        ]
+    },
+    {
+        "id": "fe527af7383f65a9",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 480,
+        "y": 880,
+        "wires": [
+            [
+                "6536798f2570ce67"
+            ]
+        ]
+    },
+    {
+        "id": "7c1502a697e580f8",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 580,
+        "y": 820,
+        "wires": [
+            [
+                "416ee531ccb7dcc6"
+            ]
+        ]
+    },
+    {
+        "id": "aff74b7dce384112",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "colors",
+        "url": "/colors",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 160,
+        "wires": [
+            [
+                "2d7707838c0525c5"
+            ]
+        ]
+    },
+    {
+        "id": "2d7707838c0525c5",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "function 3",
+        "func": "msg.payload = global.get('colorsTable');\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 160,
+        "wires": [
+            [
+                "0ce68cce514a52c6"
+            ]
+        ]
+    },
+    {
+        "id": "0ce68cce514a52c6",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 400,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "c389ed6fc6b93f26",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "models",
+        "url": "/models",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 200,
+        "wires": [
+            [
+                "a638a01bb2ee90be"
+            ]
+        ]
+    },
+    {
+        "id": "a638a01bb2ee90be",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "function 9",
+        "func": "msg.payload = global.get('modelsTable');\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 200,
+        "wires": [
+            [
+                "f9b512136bf6f7ed"
+            ]
+        ]
+    },
+    {
+        "id": "f9b512136bf6f7ed",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 400,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "884d9d1ac8aaab0c",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "listar-veiculo-id",
+        "url": "/listar-veiculo-id",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 940,
+        "wires": [
+            [
+                "7afb33d92f016d56"
+            ]
+        ]
+    },
+    {
+        "id": "c0795fb9745f1567",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "200",
+        "headers": {},
+        "x": 980,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "e156779fadeeb85e",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "function 13",
+        "func": "let uuid = msg.request.uuid;\n\nconst veiculos = flow.get('veiculo') || [];\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet veiculo = veiculos.find(veiculo => veiculo.uuid === uuid);\n\nif(veiculo) {\n    msg.payload = {\n        'message': 'veiculo identificado',\n        'veiculo': veiculo\n    }\n    return msg\n}\n\nmsg.payload = {\n    'message': 'Usuario inexistente'\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 940,
+        "wires": [
+            [
+                "c0795fb9745f1567"
+            ]
+        ]
+    },
+    {
+        "id": "7afb33d92f016d56",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "formatar jwt",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Token não enviado ou mal formatado\" };\n    return [null, msg];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 940,
+        "wires": [
+            [
+                "6c88b8c6dec4d6b7"
+            ]
+        ]
+    },
+    {
+        "id": "6c88b8c6dec4d6b7",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 520,
+        "y": 940,
+        "wires": [
+            [
+                "e156779fadeeb85e"
+            ]
+        ]
+    },
+    {
+        "id": "ef20ad63d2cc5f7b",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "alterar-veiculo-id",
+        "url": "/alterar-veiculo-id",
+        "method": "put",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 1000,
+        "wires": [
+            [
+                "0969ae314d9b20fa"
+            ]
+        ]
+    },
+    {
+        "id": "ee40c14b1363bb74",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "200",
+        "headers": {},
+        "x": 980,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "989282fe68c0a670",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "function 14",
+        "func": "let veiculos = flow.get('veiculo') || [];\nlet updateDate = new Date().toISOString();\n\nif (!Array.isArray(veiculos)) {\n    veiculos = [];\n}\n\nconst requisicao = msg.request;\nconst uuid = requisicao.uuid;\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet veiculoExistente = veiculos.find(v => v.uuid === uuid);\nif (!veiculoExistente) {\n    msg.payload = { error: \"Veículo não encontrado\" };\n    return msg;\n}\n\n// Lista models e colors salvos\nlet models = flow.get('models') || [];\nlet colors = flow.get('colors') || [];\n\nlet modelObj = models.find(m => m.uuid === requisicao.modelUuid);\nlet colorObj = colors.find(c => c.uuid === requisicao.colorUuid);\n\nconsole.log(modelObj)\nconsole.log(colorObj)\n\nif (!modelObj || !colorObj) {\n    msg.payload = { error: \"Model ou Color não encontrado\" };\n    return msg;\n}\n\nlet veiculoAtualizado = {\n    uuid: uuid,\n    model: { uuid: modelObj.uuid, modelName: modelObj.modelName },\n    color: { uuid: colorObj.uuid, colorName: colorObj.colorName },\n    year: requisicao.year,\n    imagePath: requisicao.imagePath,\n    creationUserName: veiculoExistente.creationUserName,\n    creationDate: veiculoExistente.creationDate,\n    updateDate: updateDate\n};\n\n// Remove e reinsere\nveiculos = veiculos.filter(v => v.uuid !== uuid);\nveiculos.push(veiculoAtualizado);\nflow.set('veiculo', veiculos);\n\nmsg.payload = { message: \"Veículo atualizado\", veiculo: veiculoAtualizado };\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 1000,
+        "wires": [
+            [
+                "ee40c14b1363bb74"
+            ]
+        ]
+    },
+    {
+        "id": "0969ae314d9b20fa",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "formatar jwt",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Token não enviado ou mal formatado\" };\n    return [null, msg];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 1000,
+        "wires": [
+            [
+                "7d72608e25a2022c"
+            ]
+        ]
+    },
+    {
+        "id": "7d72608e25a2022c",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 520,
+        "y": 1000,
+        "wires": [
+            [
+                "989282fe68c0a670"
             ]
         ]
     }

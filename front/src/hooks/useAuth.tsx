@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function useAuth() {
+
+  const navigate = useNavigate();
 
   const getToken = (): string | null => {
     const token = localStorage.getItem("Authorization");
@@ -31,13 +34,32 @@ export function useAuth() {
 
   const authHeader = token ? `Bearer ${token}` : "";
 
+  async function fetchWithAuth(url: string, options: RequestInit = {}) {
+    const headers = {
+      ...(options.headers || {}),
+      Authorization: authHeader,
+      "Content-Type": "application/json",
+    };
+
+    try {
+      const response = await fetch(url, { ...options, headers });
+      if (response.status === 401) {
+        logout();
+        navigate("/login");
+        return null;
+      }
+      return response;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      throw error;
+    }
+  }
+
   return {
     getToken,
     saveTokenSession,
     logout,
     isLoggedIn,
-    token,
-    roles,
-    authHeader, // <--- cabeçalho montado pronto pra usar
+    fetchWithAuth,
   };
 }

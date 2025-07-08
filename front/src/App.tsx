@@ -11,6 +11,7 @@ import AlterarUsuario from './routes/usuario/alteracao/AlterarUsuario';
 import Veiculo from './routes/veiculo/Veiculo';
 import CadastrarVeiculo from './routes/veiculo/cadastrar/CadastrarVeiculo';
 import UsuarioForm from './routes/usuario/form/UsuarioForm';
+import AlterarVeiculo from './routes/veiculo/alterar/AlterarVeiculo';
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/veiculo/editar/:uuid" element={<AlterarVeiculo />} />
 
         <Route
           path="/dashboard"

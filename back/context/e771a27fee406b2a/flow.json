@@ -95,40 +95,28 @@
     },
     "users": [
         {
-            "uuid": "1751915327647",
-            "name": "admin",
-            "password": "admin",
-            "isActived": true,
-            "isRoot": true,
+            "uuid": "1751993542328",
+            "name": "gabriasdf",
+            "password": "password",
+            "isActived": false,
+            "isRoot": "false",
             "roles": [
-                "ADMIN",
-                "USER"
+                "ADMIN"
             ],
-            "creationDate": "2025-07-07T19:08:47.647Z"
+            "creationDate": "2025-07-08T16:52:22.328Z"
         },
         {
-            "uuid": "1751917263439",
-            "name": "gabriel matinal 02",
-            "password": "132",
-            "isActived": true,
-            "isRoot": true,
-            "roles": [
-                "ADMIN",
-                "USER"
-            ],
-            "creationDate": "2025-07-07T19:41:03.439Z"
-        },
-        {
-            "uuid": "1751917359791",
-            "name": "gabriel",
+            "uuid": "1751994020667",
+            "name": "asdfaasdfasdfsdf",
             "password": "123",
-            "isActived": true,
-            "isRoot": true,
+            "isActived": "true",
+            "isRoot": "true",
             "roles": [
-                "ADMIN",
-                "USER"
+                "USER",
+                "ADMIN"
             ],
-            "creationDate": "2025-07-07T19:42:39.791Z"
+            "updateDate": "2025-07-08T17:00:32.919Z",
+            "creationDate": "2025-07-08T17:00:20.667Z"
         }
     ]
 }
