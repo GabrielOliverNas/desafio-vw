@@ -1,0 +1,46 @@
+.listar-veiculos {
+  margin-top: 1%;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  width: calc(100% - 220px);
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 2px solid #0074D9;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.listar-veiculos table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  min-width: 800px;
+}
+
+.listar-veiculos th,
+.listar-veiculos td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.listar-veiculos th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .listar-veiculos {
+    width: 100%;
+    margin-left: 0;
+    padding: 1rem;
+    border-radius: 0;
+    border: none;
+  }
+
+  .listar-veiculos table {
+    min-width: 100%;
+  }
+}

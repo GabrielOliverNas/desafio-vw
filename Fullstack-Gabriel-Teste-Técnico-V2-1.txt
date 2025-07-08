@@ -1,0 +1,27 @@
+
+
+    Alterar usu�rio
+        Dever� gerar um log interno do evento no backend formatado da seguinte maneira: [{Date/Time}][{UserName}][{Route Name}]: {Request Payload} (Transformar em JSON String)
+    Veiculos
+        o Adicionar novos ve�culos.
+            Dever� gerar um log interno do evento no backend formatado da seguinte maneira: [{Date/Time}][{UserName}][{Route Name}]: {Request Payload} (Transformar em JSON String)
+        Vincular ve�culo com modelo/cor previamente cadastrados na aplica��o.
+        Permitir upload da foto do ve�culo
+    Listar todos os ve�culos com:
+        Tabela contendo todos os campos do ve�culo inclusive foto
+        Paginacao permitindo usuario escolher quantidade de linhas a serem exibidas e N� da pagina
+        Ordenacao por modelo, cor, ano e data de cria��o
+        Busca por informacao inputada
+    Alterar informacoes de veiculos/cores/modelos.
+        Dever� gerar um log interno do evento no backend formatado da seguinte maneira: [{Date/Time}][{UserName}][{Route Name}]: {Request Payload} (Transformar em JSON String)
+    Excluir veiculo.
+        Devera gerar um log interno do evento no backend formatado da seguinte maneira: [{Date/Time}][{UserName}][{Route Name}]: {Request Payload} (Transformar em JSON String)
+
+Criterios de Avaliacao:
+    Cumprimento dos requisitos.
+    Codigo bem estruturado e de facil entendimento.
+    Interface intuitiva e de facil uso.
+    Facilidade de manutencao e escalabilidade.
+Conclusao:
+    Exportar o projeto do Node-RED como JSON e enviar para avalia��o do time IoT.
+

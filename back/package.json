@@ -1,0 +1,16 @@
+{
+    "name": "node-red-project",
+    "description": "A Node-RED Project",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "bcrypt": "^6.0.0",
+        "bcryptjs": "^3.0.2",
+        "jsonwebtoken": "^9.0.2",
+        "node-localstorage": "^3.0.5",
+        "node-red-contrib-bcrypt": "^0.1.6",
+        "node-red-contrib-jsonwebtoken": "~1.0.4",
+        "node-red-contrib-twin-bcrypt": "~0.0.4",
+        "uuid": "^11.1.0"
+    }
+}

@@ -1,0 +1,134 @@
+{
+    "veiculo": [
+        {
+            "uuid": "29997a04-7e02-4eba-b341-213ba85cd279",
+            "creationUserName": "Josefino",
+            "updateUserName": "Gabriel",
+            "creationDate": "2025-07-07T14:31:01.863Z",
+            "model": {
+                "uuid": "1537eea0-2b98-40c0-9bd9-5c4d0bf716bc",
+                "modelName": "T-Cross"
+            },
+            "color": {
+                "uuid": "f773b379-bf26-429c-b9b7-09aff7f035bf",
+                "colorName": "Azul"
+            },
+            "year": 2025,
+            "imagePath": [
+                "http://localhost:1880/download (1).jfif",
+                "http://localhost:1880/download (3).jfif",
+                "http://localhost:1880/download.jfif"
+            ]
+        },
+        {
+            "uuid": "67df8ccf-f183-4229-90b7-a2d45b174177",
+            "creationUserName": "Maria Joaquina",
+            "updateUserName": "Roberto Carlos",
+            "creationDate": "2025-07-07T14:38:15.831Z",
+            "model": {
+                "uuid": "cf174270-d380-4c1a-8dd0-4db25539fb36",
+                "modelName": "Nivus"
+            },
+            "color": {
+                "uuid": "3dc74fae-f062-4ac9-84e9-b57df02abee9",
+                "colorName": "Cinza"
+            },
+            "year": 2025,
+            "imagePath": [
+                "http://localhost:1880/assets/Nivus/download.jfif",
+                "http://localhost:1880/download(1).jfif",
+                "http://localhost:1880/download(2).jfif"
+            ]
+        }
+    ],
+    "logs": [
+        "[2025-07-07T12:57:02.674Z][undefined][/veiculos/inserir]: {\"placa\":\"XYZ9876\",\"marca\":\"Ford\",\"modelo\":\"Ka\",\"ano\":2025,\"cor\":\"vermelho\",\"proprietario\":\"Jose da silva\"}",
+        "[2025-07-07T12:59:29.849Z][undefined][/veiculos/inserir]: {\"placa\":\"XYZ9876\",\"marca\":\"Ford\",\"modelo\":\"Ka\",\"ano\":2025,\"cor\":\"vermelho\",\"proprietario\":\"Jose da silva\"}",
+        "[2025-07-07T13:10:14.606Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":1}",
+        "[2025-07-07T13:10:21.158Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":2}",
+        "[2025-07-07T13:10:23.016Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":3}",
+        "[2025-07-07T13:10:24.518Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":4}",
+        "[2025-07-07T13:10:25.883Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":5}",
+        "[2025-07-07T13:10:27.107Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":6}",
+        "[2025-07-07T13:15:51.417Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":7}",
+        "[2025-07-07T13:16:25.391Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":8}",
+        "[2025-07-07T13:16:51.318Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":9}",
+        "[2025-07-07T13:20:03.238Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":10}",
+        "[2025-07-07T13:20:34.132Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":11}",
+        "[2025-07-07T13:22:15.579Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":12}",
+        "[2025-07-07T13:22:54.916Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":13}",
+        "[2025-07-07T13:23:04.625Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":14}",
+        "[2025-07-07T13:24:04.606Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":15}",
+        "[2025-07-07T13:24:56.397Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":16}",
+        "[2025-07-07T13:27:50.888Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":17}",
+        "[2025-07-07T13:31:00.520Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":18}",
+        "[2025-07-07T13:32:16.808Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":19}",
+        "[2025-07-07T13:33:34.929Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":20}",
+        "[2025-07-07T13:34:25.313Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":21}",
+        "[2025-07-07T13:35:39.180Z][undefined][/veiculos/inserir]: {\"name\":\"gabriel.nascimento\",\"roles\":[\"ADMIN\",\"USER\"],\"iat\":1751893013,\"exp\":1751896613}",
+        "[2025-07-07T13:35:44.321Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":22}",
+        "[2025-07-07T13:36:00.282Z][undefined][/veiculos/inserir]: {\"name\":\"gabriel.nascimento\",\"roles\":[\"ADMIN\",\"USER\"],\"iat\":1751893013,\"exp\":1751896613}",
+        "[2025-07-07T13:36:03.399Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":1}",
+        "[2025-07-07T13:41:47.590Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":2}",
+        "[2025-07-07T13:44:37.908Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":3}",
+        "[2025-07-07T13:53:20.713Z][undefined][/veiculos/inserir]: {\"name\":\"gabriel.nascimento\",\"roles\":[\"ADMIN\",\"USER\"],\"iat\":1751893013,\"exp\":1751896613}",
+        "[2025-07-07T13:53:22.678Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":1}",
+        "[2025-07-07T14:00:18.563Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":2}",
+        "[2025-07-07T14:29:50.864Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":3}",
+        "[2025-07-07T14:30:51.797Z][undefined][/veiculos/inserir]: {\"name\":\"gabriel.nascimento\",\"roles\":[\"ADMIN\",\"USER\"],\"iat\":1751898640,\"exp\":1751902240}",
+        "[2025-07-07T14:31:01.877Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":1}",
+        "[2025-07-07T14:38:15.833Z][undefined][/veiculos/inserir]: {\"status\":\"sucesso\",\"total\":2}"
+    ],
+    "veiculos": [],
+    "Logs": "default",
+    "user": {
+        "uuid": "1751914130605",
+        "name": "Jonas",
+        "password": "123",
+        "isActived": true,
+        "isRoot": true,
+        "roles": [
+            "ADMIN",
+            "USER"
+        ],
+        "updateDate": "2025-07-07T18:54:10.301Z"
+    },
+    "users": [
+        {
+            "uuid": "1751915327647",
+            "name": "admin",
+            "password": "admin",
+            "isActived": true,
+            "isRoot": true,
+            "roles": [
+                "ADMIN",
+                "USER"
+            ],
+            "creationDate": "2025-07-07T19:08:47.647Z"
+        },
+        {
+            "uuid": "1751917263439",
+            "name": "gabriel matinal 02",
+            "password": "132",
+            "isActived": true,
+            "isRoot": true,
+            "roles": [
+                "ADMIN",
+                "USER"
+            ],
+            "creationDate": "2025-07-07T19:41:03.439Z"
+        },
+        {
+            "uuid": "1751917359791",
+            "name": "gabriel",
+            "password": "123",
+            "isActived": true,
+            "isRoot": true,
+            "roles": [
+                "ADMIN",
+                "USER"
+            ],
+            "creationDate": "2025-07-07T19:42:39.791Z"
+        }
+    ]
+}

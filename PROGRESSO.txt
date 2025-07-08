@@ -1,0 +1,47 @@
+Objetivo: Criar um sistema CRUD (Create, Read, Update, Delete) para gerenciar ve�culos do grupo VW.
+Arquitetura:
+    Banco de Dados: Simular um banco de dados usando context storage do Node-RED.   ok
+
+Data Format: JSON
+Entity: 
+    User                                                                            OK
+        uuid
+        DateTime creationDate
+        DateTime updatedDate
+        String name
+        String password (bcrypt)
+        Boolean isActived
+        Boolean isRoot
+    Color Obs:. entidade est�tica pr�-cadastrada com ('Preto', 'Branco, 'Vermelho', 'Cinza', 'Azul')
+        uuid 
+        String colorName
+    Model Obs:. entidade est�tica pr�-cadastrada com ('T-Cross', 'Nivus', 'Polo', 'Virtus', 'Saveiro', 'Track')
+        uuid 
+        String modeName
+    Vehicle 
+        uuid 
+        String creationUserName
+        String updatedUserName
+        DateTime creationDate
+        DateTime updatedDate
+        Model model
+        Color color
+        Number year
+        String imagePath (O arquivo deve ser armazenado localmente com acesso HTTP est�tico)
+Tecnologias: 
+    o Node-RED com API RESTful (Permitido depend�ncias para bycrpt e JWT) OK
+    o React JS e Typescript (Sem depend�ncias de estiliza��o usar HTML e CSS puro) OK
+
+
+Funcionalidades da Aplica��o:
+    Autentica��o:
+        o Login com nome/senha OK
+        o Autentica��o via JWT (JSON Web Token) OK
+        o Todas a rotas API devem verificar a exist�ncia do token no cabe�alho da requisi��o caso contr�rio n�o permitir OK
+
+Usuarios:
+    o Adicionar usuario OK   
+    Usuario Root pode criar/alterar usuarios e gerenciar veiculos
+    Usuario nao Root somente gerenciar veiculos
+    Devera gerar um log interno do evento no backend formatado da seguinte maneira:
+        [{Date/Time}][{UserName}][{Route Name}]: {Request Payload} (Transformar em JSON String)

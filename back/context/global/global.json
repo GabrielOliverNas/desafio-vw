@@ -1,0 +1,50 @@
+{
+    "colorTable": [
+        {
+            "uuid": "a87b6c3d-0e63-48e9-8e68-eb54b5d2c171",
+            "colorName": "Preto"
+        },
+        {
+            "uuid": "3f0b1c5e-61ba-457a-95bd-1ae439f9aa11",
+            "colorName": "Branco"
+        },
+        {
+            "uuid": "1b576d1b-bd80-46eb-a6d5-c8aeace2e893",
+            "colorName": "Vermelho"
+        },
+        {
+            "uuid": "3dc74fae-f062-4ac9-84e9-b57df02abee9",
+            "colorName": "Cinza"
+        },
+        {
+            "uuid": "f773b379-bf26-429c-b9b7-09aff7f035bf",
+            "colorName": "Azul"
+        }
+    ],
+    "modelsTable": [
+        {
+            "uuid": "d0f89f15-bb13-438b-87df-6e3993064b14",
+            "colorName": "T-Cross"
+        },
+        {
+            "uuid": "a5ae14bf-d9d6-4c82-bfd7-9552ffb5df94",
+            "colorName": "Nivus"
+        },
+        {
+            "uuid": "ebc90b54-554e-4c75-998d-597c605cc8f1",
+            "colorName": "Polo"
+        },
+        {
+            "uuid": "0e0e2345-515b-4f8e-952f-2d29f8e39631",
+            "colorName": "Virtus"
+        },
+        {
+            "uuid": "84eaa9f3-0f24-41c4-9224-5a9250cf9007",
+            "colorName": "Saveiro"
+        },
+        {
+            "uuid": "c89243a1-6ca6-4ae4-ab91-cfb043396043",
+            "colorName": "Track"
+        }
+    ]
+}
