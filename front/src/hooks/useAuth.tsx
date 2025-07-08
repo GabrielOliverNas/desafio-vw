@@ -29,7 +29,6 @@ export function useAuth() {
 
   const isLoggedIn = () => !!token;
 
-  // 👉 Sempre monta o Authorization pronto
   const authHeader = token ? `Bearer ${token}` : "";
 
   return {
