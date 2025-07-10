@@ -93,30 +93,14 @@
         ],
         "updateDate": "2025-07-07T18:54:10.301Z"
     },
-    "users": [
-        {
-            "uuid": "1751993542328",
-            "name": "gabriasdf",
-            "password": "password",
-            "isActived": false,
-            "isRoot": "false",
-            "roles": [
-                "ADMIN"
-            ],
-            "creationDate": "2025-07-08T16:52:22.328Z"
-        },
-        {
-            "uuid": "1751994020667",
-            "name": "asdfaasdfasdfsdf",
-            "password": "123",
-            "isActived": "true",
-            "isRoot": "true",
-            "roles": [
-                "USER",
-                "ADMIN"
-            ],
-            "updateDate": "2025-07-08T17:00:32.919Z",
-            "creationDate": "2025-07-08T17:00:20.667Z"
-        }
-    ]
+    "users": {
+        "name": "admin",
+        "password": "admin",
+        "isActived": true,
+        "isRoot": true,
+        "roles": [
+            "ADMIN",
+            "USER"
+        ]
+    }
 }

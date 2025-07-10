@@ -8,15 +8,12 @@ const Sidebar: React.FC = () => {
       <h2 className="logo">VW</h2>
       <nav>
         <NavLink to="/dashboard" className="nav-item">Dashboard</NavLink>
-
-        {/* Usuários submenu */}
         <div className="submenu">
           <div className="submenu-title">Usuários</div>
           <NavLink to="/usuario" className="nav-item submenu-item">Listar</NavLink>
           <NavLink to="/usuario/cadastrar" className="nav-item submenu-item">Cadastrar</NavLink>
         </div>
-
-        {/* Veículos submenu */}
+        
         <div className="submenu">
           <div className="submenu-title">Veículos</div>
           <NavLink to="/veiculos" className="nav-item submenu-item">Listar</NavLink>

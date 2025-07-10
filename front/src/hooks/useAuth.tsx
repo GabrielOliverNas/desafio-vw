@@ -25,7 +25,7 @@ export function useAuth() {
   };
 
   const logout = () => {
-    localStorage.removeItem("Authorization");
+    localStorage.removeItem("token");
     setToken(null);
     setRoles([]);
   };

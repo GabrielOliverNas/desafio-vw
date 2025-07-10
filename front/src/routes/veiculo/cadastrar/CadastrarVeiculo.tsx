@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../../../componentes/sidebar/Sidebar";
 import Navbar from "../../../componentes/navbar/Navibar";
 import { Toast } from "../../../componentes/utils/Toast";
-import "./CadastrarVeiculo.css"; // Reaproveitando o estilo do usuário
+import "./CadastrarVeiculo.css";
 import { useNavigate } from "react-router-dom";
+
+
+interface Option {
+  uuid: string;
+  modelName?: string;
+  colorName?: string;
+}
 
 export default function CadastrarVeiculo() {
   const [modelo, setModelo] = useState("");
@@ -15,7 +22,35 @@ export default function CadastrarVeiculo() {
   const [toastType, setToastType] = useState<"success" | "error">("success");
   const [showToast, setShowToast] = useState(false);
 
+  const [models, setModels] = useState<Option[]>([]);
+  const [colors, setColors] = useState<Option[]>([]);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchData() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      const modelsRes = await fetch("http://localhost:1880/models", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const modelsData = await modelsRes.json();
+      setModels(modelsData);
+
+      const colorsRes = await fetch("http://localhost:1880/colors", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const colorsData = await colorsRes.json();
+      setColors(colorsData);
+    }
+
+    fetchData();
+  }, [navigate]);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,57 +105,73 @@ export default function CadastrarVeiculo() {
     <div className="container">
       <Navbar />
       <Sidebar />
-      <div className="usuario">
-        <form onSubmit={handleSubmit}>
-          <label>
-            Modelo:
-            <input
-              type="text"
-              value={modelo}
-              onChange={(e) => setModelo(e.target.value)}
-              required
-              placeholder="Digite o modelo"
-            />
-          </label>
 
-          <label>
-            Cor:
-            <input
-              type="text"
-              value={cor}
-              onChange={(e) => setCor(e.target.value)}
-              required
-              placeholder="Digite a cor"
-            />
-          </label>
+      <div className="center-wrapper">
+        <div className="usuario">
+          <form onSubmit={handleSubmit}>       
+            <label>
+              Modelo:
+              <select
+                name="modelUuid"
+                value={modelo}
+                onChange={(e) => setModelo(e.target.value)}
+                required
+              >
+                <option value="">Selecione</option>
+                {models.map((m) => (
+                  <option key={m.uuid} value={m.uuid}>
+                    {m.modelName}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          <label>
-            Ano:
-            <input
-              type="number"
-              value={ano}
-              onChange={(e) => setAno(Number(e.target.value))}
-              min="1900"
-              max={new Date().getFullYear() + 1}
-              required
-              placeholder="Digite o ano"
-            />
-          </label>
+            <label>
+              Cor:
+              <select
+                name="colorUuid"
+                value={cor}
+                onChange={(e) => setCor(e.target.value)}
+                required
+              >
+                <option value="">Selecione</option>
+                {colors.map((c) => (
+                  <option key={c.uuid} value={c.uuid}>
+                    {c.colorName}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          <label>
-            URL da Foto:
-            <input
-              type="url"
-              value={fotoUrl}
-              onChange={(e) => setFotoUrl(e.target.value)}
-              placeholder="https://servidor.com/foto.jpg"
-              required
-            />
-          </label>
+            <label>
+              Ano:
+              <input
+                type="number"
+                value={ano}
+                onChange={(e) => setAno(Number(e.target.value))}
+                min="1900"
+                max={new Date().getFullYear() + 1}
+                required
+                placeholder="Digite o ano"
+              />
+            </label>
 
-          <button type="submit">Cadastrar Veículo</button>
-        </form>
+            <label>
+              URL da Foto:
+              <input
+                type="url"
+                value={fotoUrl}
+                onChange={(e) => setFotoUrl(e.target.value)}
+                placeholder="https://servidor.com/foto.jpg"
+                required
+              />
+            </label>
+
+            <button type="submit">Cadastrar Veículo</button>
+          </form>
+        </div>
       </div>
+
 
       {showToast && (
         <Toast

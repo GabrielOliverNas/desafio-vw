@@ -40,7 +40,7 @@ export default function AlterarUsuario() {
 
         setOldUser(data);
         setName(data.name);
-        setPassword(""); // limpa senha para editar
+        setPassword("");
         setIsRoot(data.isRoot === true);
         setRoles(data.roles || []);
       } catch (err) {
@@ -85,7 +85,6 @@ export default function AlterarUsuario() {
       <Navbar></Navbar>
       <Sidebar />
       <div className="editar-container">
-        {/* Card dados antigos */}
         <div className="card old-user">
           <h3>Dados Antigos</h3>
           <p><strong>Nome:</strong> {oldUser.name}</p>
@@ -96,7 +95,6 @@ export default function AlterarUsuario() {
           <p><strong>Atualizado em:</strong> {new Date(oldUser.updatedDate).toLocaleString()}</p>
         </div>
 
-        {/* Card formulário de edição */}
         <div className="card new-user">
           <h3>Atualizar Usuário</h3>
           <form onSubmit={handleSubmit}>

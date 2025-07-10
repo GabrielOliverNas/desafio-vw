@@ -42,8 +42,7 @@ export default function Usuario() {
         }
 
         const data = await res.json();
-        setUsuarios(data);
-
+        setUsuarios(Array.isArray(data) ? data : [data]);
       } catch (err) {
         console.error(err);
       }
@@ -89,47 +88,47 @@ export default function Usuario() {
   <div className="container">
     <Navbar />
     <Sidebar />
-    <div className="listar">
-      <h2>Lista de Usuários</h2>
-      {usuarios.length === 0 ? (
-        <p>Nenhum usuário encontrado.</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Senha</th>
-              <th>Ativo</th>
-              <th>Administrador</th>
-              <th>Roles</th>
-              <th>Criado em</th>
-              <th>Atualizado em</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuarios.map((user) => (
-              <tr key={user.uuid}>
-                <td>{user.name}</td>
-                <td>{user.password}</td>
-                <td>{user.isActived}</td>
-                <td>{user.isRoot}</td>
-                <td>{(user.roles || []).join(", ")}</td>
-                <td>{new Date(user.creationDate).toLocaleString()}</td>
-                <td>{new Date(user.updateDate || user.creationDate).toLocaleString()}</td>
-                <td>
-                  <button onClick={() => handleEditar(user.uuid)} className="btn-editar">
-                    🖉
-                  </button>
-                  <button onClick={() => handleExcluir(user.uuid)} className="btn-excluir">
-                    🗑️
-                  </button>
-                </td>
+    <div className="center-wrapper">
+      <div className="listar">
+        <h2>Lista de Usuários</h2> {usuarios.length === 0 ? (
+          <p>Nenhum usuário encontrado.</p>) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Senha</th>
+                <th>Ativo</th>
+                <th>Administrador</th>
+                <th>Roles</th>
+                <th>Criado em</th>
+                <th>Atualizado em</th>
+                <th>Ações</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {usuarios.map((user) => (
+                <tr key={user.uuid}>
+                  <td>{user.name}</td>
+                  <td>{user.password}</td>
+                  <td>{user.isActived}</td>
+                  <td>{user.isRoot}</td>
+                  <td>{(user.roles || []).join(", ")}</td>
+                  <td>{new Date(user.creationDate).toLocaleString()}</td>
+                  <td>{new Date(user.updateDate || user.creationDate).toLocaleString()}</td>
+                  <td>
+                    <button onClick={() => handleEditar(user.uuid)} className="btn-editar">
+                      🖉
+                    </button>
+                    <button onClick={() => handleExcluir(user.uuid)} className="btn-excluir">
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   </div>
 );

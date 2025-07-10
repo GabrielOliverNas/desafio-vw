@@ -4,11 +4,11 @@
   left: 0;
   width: 200px;
   height: 100vh;
-  background-color: #0074D9;
+  background-color: #001f3f;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 80px; /* deixa espaço pro VW */
+  padding-top: 80px;
   box-sizing: border-box;
 }
 
@@ -37,5 +37,13 @@
 }
 
 .sidebar nav a:hover {
-  background-color: #005fa3;
+  background-color: #001f3f;
+}
+
+.logo {
+  color: white
+}
+
+.submenu {
+  color: white;
 }

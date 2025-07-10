@@ -14,11 +14,11 @@
 }
 
 .toast.success {
-  background-color: #28a745; /* verde */
+  background-color: #28a745;
 }
 
 .toast.error {
-  background-color: #dc3545; /* vermelho */
+  background-color: #dc3545;
 }
 
 .close-btn {

@@ -14,7 +14,6 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="navbar">
-      <Link to="/">Home</Link>
       <Link to="/dashboard">Dashboard</Link>
       <button onClick={handleLogout}>Logout</button>
     </header>

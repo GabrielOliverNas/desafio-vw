@@ -1,4 +1,3 @@
-# Dockerfile do FRONTEND
 FROM node:20
 
 WORKDIR /app

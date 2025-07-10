@@ -81,74 +81,76 @@ export default function CadastrarUsuario() {
     <div className="container">
       <Navbar />
       <Sidebar />
-      <div className="usuario">
-        <form onSubmit={handleSubmit}>
-          <label>
-            Name:
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              placeholder="Digite o nome"
-            />
-          </label>
-
-          <label>
-            Password:
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPasswor(e.target.value)}
-              required
-              placeholder="Digite o password"
-            />
-          </label>
-
-          <fieldset className="permissoes-group">
-            <legend>Permissões:</legend>
-
-            <label className="checkbox-label">
+      <div className="center-wrapper">
+        <div className="usuario">
+          <form onSubmit={handleSubmit}>
+            <label>
+              Name:
               <input
-                type="checkbox"
-                checked={permissoes.includes("USER")}
-                onChange={() => togglePermissao("USER")}
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                placeholder="Digite o nome"
               />
-              USER
             </label>
 
-            <label className="checkbox-label">
+            <label>
+              Password:
               <input
-                type="checkbox"
-                checked={permissoes.includes("ADMIN")}
-                onChange={() => togglePermissao("ADMIN")}
+                type="password"
+                value={password}
+                onChange={(e) => setPasswor(e.target.value)}
+                required
+                placeholder="Digite o password"
               />
-              ADMIN
-            </label>
-          </fieldset>
-
-          <div className="checkbox-inline-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={isActiveFlag}
-                onChange={(e) => setIsActiveFlag(e.target.checked)}
-              />
-              Ativo
             </label>
 
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={isAdminFlag}
-                onChange={(e) => setIsAdminFlag(e.target.checked)}
-              />
-              Administrador
-            </label>
-          </div>
+            <fieldset className="flags-group">
+              <legend>Permissões:</legend>
+              <div className="flag-item">
+                <input
+                  type="checkbox"
+                  id="USER"
+                  checked={permissoes.includes("USER")}
+                  onChange={() => togglePermissao("USER")}
+                  />
+                <label htmlFor="USER">USER</label>
+              </div>
+              <div className="flag-item">
+                <input
+                  type="checkbox"
+                  id="admin"
+                  checked={permissoes.includes("ADMIN")}
+                  onChange={() => togglePermissao("ADMIN")}
+                  />
+                <label htmlFor="ADMIN">ADMIN</label>
+              </div>
+            </fieldset>
 
-          <button type="submit">Cadastrar</button>
-        </form>
+            <div className="flag-item">
+                <input
+                  type="checkbox"
+                  id="ativo"
+                  checked={isActiveFlag}
+                  onChange={(e) => setIsActiveFlag(e.target.checked)}
+                />
+                <label htmlFor="ativo">Ativo</label>
+              </div>
+
+              <div className="flag-item">
+                <input
+                  type="checkbox"
+                  id="admin"
+                  checked={isAdminFlag}
+                  onChange={(e) => setIsAdminFlag(e.target.checked)}
+                />
+                <label htmlFor="admin">Administrador</label>
+              </div>
+
+            <button type="submit">Cadastrar</button>
+          </form>
+        </div>
       </div>
 
       {showToast && (

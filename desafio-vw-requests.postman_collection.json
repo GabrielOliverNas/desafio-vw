@@ -1,0 +1,427 @@
+{
+	"info": {
+		"_postman_id": "fd612ce6-e77e-454c-bf28-f876f0e34e4e",
+		"name": "desafio-vw-requests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10396721",
+		"_collection_link": "https://winter-shuttle-106151.postman.co/workspace/nodejs~6f98dcb8-e1cb-402b-87be-630646eff76a/collection/10396721-fd612ce6-e77e-454c-bf28-f876f0e34e4e?action=share&source=collection_link&creator=10396721"
+	},
+	"item": [
+		{
+			"name": "usuarios",
+			"item": [
+				{
+					"name": "listar-usuarios",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2FicmllbCIsInJvbGVzIjpbIlVTRVIiLCJBRE1JTiJdLCJpYXQiOjE3NTE5OTI3NzQsImV4cCI6MTc1MTk5NjM3NH0.zfKb3mbK2xfsbXVA5LYNjZsUf0zzx1Bm1mWTe-_rS74",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:1880/listar-usuarios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"listar-usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuario_id",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2FicmllbCIsInJvbGVzIjpbIlVTRVIiLCJBRE1JTiJdLCJpYXQiOjE3NTE5OTI3NzQsImV4cCI6MTc1MTk5NjM3NH0.zfKb3mbK2xfsbXVA5LYNjZsUf0zzx1Bm1mWTe-_rS74",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uuid\": \"1751991911160\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/usuario-id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"usuario-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuario",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2FicmllbCIsInJvbGVzIjpbIlVTRVIiLCJBRE1JTiJdLCJpYXQiOjE3NTE5OTI3NzQsImV4cCI6MTc1MTk5NjM3NH0.zfKb3mbK2xfsbXVA5LYNjZsUf0zzx1Bm1mWTe-_rS74",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uuid\": \"1751991911160\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/deletar-usuario-id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"deletar-usuario-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuario_id",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2FicmllbCIsInJvbGVzIjpbIlVTRVIiLCJBRE1JTiJdLCJpYXQiOjE3NTE5OTI3NzQsImV4cCI6MTc1MTk5NjM3NH0.zfKb3mbK2xfsbXVA5LYNjZsUf0zzx1Bm1mWTe-_rS74",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uuid\": \"1751994020667\",\r\n    \"name\": \"asdfaasdfasdfsdf\",\r\n    \"password\": \"123\",\r\n    \"isActived\": \"true\",\r\n    \"isRoot\": \"true\",\r\n    \"roles\": [\r\n        \"USER\",\r\n        \"ADMIN\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/alterar-usuario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"alterar-usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2FicmllbCIsInJvbGVzIjpbIlVTRVIiLCJBRE1JTiJdLCJpYXQiOjE3NTE5OTI3NzQsImV4cCI6MTc1MTk5NjM3NH0.zfKb3mbK2xfsbXVA5LYNjZsUf0zzx1Bm1mWTe-_rS74",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"admin\",\r\n    \"isActived\": false,\r\n    \"isRoot\": false,\r\n    \"roles\": [\"ADMIN\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/inserir-usuario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"inserir-usuario"
+							]
+						},
+						"description": "Adicionando usuarios no banco de dados"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "veiculos",
+			"item": [
+				{
+					"name": "listar-veiculos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJBRE1JTiJdLCJpYXQiOjE3NTIwMDE0NTQsImV4cCI6MTc1MjAwNTA1NH0.DzojQ30-4gQLxosBgWFOZh1fC1CIb_CzpgmVIYlhbwo",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:1880/listar-veiculos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"listar-veiculos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inserir-veiculo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJBRE1JTiJdLCJpYXQiOjE3NTIwMDAxODYsImV4cCI6MTc1MjAwMzc4Nn0.QxG7rf1aQtFJiWMpfy7upOMkN_v11A_wn6skrKax5oI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"creationUserName\": \"creationUserName\",\r\n    \"modelName\": \"t-cross\",\r\n    \"colorName\": \"preto\",\r\n    \"year\": 2025,\r\n    \"imagePath\": [\"\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/inserir-veiculo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"inserir-veiculo"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remover-veiculo-id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJBRE1JTiJdLCJpYXQiOjE3NTIwMDAwMjAsImV4cCI6MTc1MjAwMzYyMH0.LWbexabRXoUZ2YW0zkk6q-Bfj77_xuoLFAfgntxaOo8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uuid\": \"272b0919-a113-45ab-8ab5-5ede5a0cd77d\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/remover-veiculo-id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"remover-veiculo-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listar-veiculo-id",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJBRE1JTiJdLCJpYXQiOjE3NTIwMDE0NTQsImV4cCI6MTc1MjAwNTA1NH0.DzojQ30-4gQLxosBgWFOZh1fC1CIb_CzpgmVIYlhbwo",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uuid\": \"1752001604016\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/listar-veiculo-id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"listar-veiculo-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterar-veiculo-id",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJBRE1JTiJdLCJpYXQiOjE3NTIwMDE0NTQsImV4cCI6MTc1MjAwNTA1NH0.DzojQ30-4gQLxosBgWFOZh1fC1CIb_CzpgmVIYlhbwo",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uuid\": \"1752001604016\",\r\n    \"modelUuid\": \"formVeiculo.modelUuid\",\r\n    \"colorUuid\": \"preto\",\r\n    \"year\": 2025,\r\n    \"imagePath\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/alterar-veiculo-id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"alterar-veiculo-id"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"admin\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "utils",
+			"item": [
+				{
+					"name": "models",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:1880/models",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "colors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:1880/colors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"colors"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

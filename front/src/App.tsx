@@ -7,7 +7,6 @@ import AccessDenied from './routes/AccessDenied';
 import Dashboard from './routes/dashboard/Dashboard';
 import ProtectedRoute from './routes/ProtectedRoute';
 import CadastrarUsuario from './routes/usuario/cadastro/CadastrarUsuario';
-import AlterarUsuario from './routes/usuario/alteracao/AlterarUsuario';
 import Veiculo from './routes/veiculo/Veiculo';
 import CadastrarVeiculo from './routes/veiculo/cadastrar/CadastrarVeiculo';
 import UsuarioForm from './routes/usuario/form/UsuarioForm';
@@ -19,46 +18,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
 
-        <Route
-          path="/usuario"
-          element={
-            <ProtectedRoute>
-              <Usuario />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/usuario" element={<ProtectedRoute><Usuario /></ProtectedRoute>}/>
+        <Route path="/usuario/cadastrar" element={<ProtectedRoute><CadastrarUsuario /></ProtectedRoute>} />
+        <Route path="/usuario/editar/:uuid" element={<ProtectedRoute><UsuarioForm /></ProtectedRoute>} />
 
-        <Route path="/usuario/cadastrar" element={<CadastrarUsuario />} />
-        <Route path="/usuario/editar/:uuid" element={<UsuarioForm />} />
-
-        <Route
-          path="/veiculos"
-          element={
-            <ProtectedRoute>
-              <Veiculo />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/veiculos/cadastrar"
-          element={
-            <ProtectedRoute>
-              <CadastrarVeiculo />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/veiculo/editar/:uuid" element={<AlterarVeiculo />} />
-
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/veiculos" element={<ProtectedRoute><Veiculo /></ProtectedRoute>}/>
+        <Route path="/veiculos/cadastrar" element={<ProtectedRoute><CadastrarVeiculo /></ProtectedRoute>}/>
+        <Route path="/veiculo/editar/:uuid" element={<ProtectedRoute><AlterarVeiculo /></ProtectedRoute>} />
 
         <Route path="/acesso-negado" element={<AccessDenied />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

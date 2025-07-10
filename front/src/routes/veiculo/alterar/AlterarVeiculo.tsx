@@ -17,8 +17,8 @@ interface Veiculo {
 
 interface Option {
   uuid: string;
-  modelName?: string; // Para models
-  colorName?: string; // Para cores
+  modelName?: string;
+  colorName?: string;
 }
 
 export default function AlterarVeiculo() {

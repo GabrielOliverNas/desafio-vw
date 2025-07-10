@@ -8,10 +8,12 @@ const Dashboard: React.FC = () => {
     <div className="container">
       <Navbar />
       <Sidebar />
-      <main className="dashboard">
+      <div className='center-wrapper'>
+        <main className="dashboard">
         <h2>Dashboard</h2>
         <p>Bem-vindo!</p>
       </main>
+      </div>
     </div>
   );
 };

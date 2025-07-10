@@ -8,7 +8,7 @@ services:
       - "3000:3000"
     volumes:
       - ./front:/app
-      - /app/node_modules # Monta esse volume para o node_modules no container
+      - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
   backend:
