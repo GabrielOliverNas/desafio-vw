@@ -21,12 +21,12 @@ function App() {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
 
         <Route path="/usuario" element={<ProtectedRoute><Usuario /></ProtectedRoute>}/>
-        <Route path="/usuario/cadastrar" element={<ProtectedRoute><CadastrarUsuario /></ProtectedRoute>} />
-        <Route path="/usuario/editar/:uuid" element={<ProtectedRoute><UsuarioForm /></ProtectedRoute>} />
+        <Route path="/usuario/cadastrar" element={<ProtectedRoute requiredRole="ADMIN"><CadastrarUsuario /></ProtectedRoute>} />
+        <Route path="/usuario/editar/:uuid" element={<ProtectedRoute requiredRole="ADMIN"><UsuarioForm /></ProtectedRoute>} />
 
         <Route path="/veiculos" element={<ProtectedRoute><Veiculo /></ProtectedRoute>}/>
-        <Route path="/veiculos/cadastrar" element={<ProtectedRoute><CadastrarVeiculo /></ProtectedRoute>}/>
-        <Route path="/veiculo/editar/:uuid" element={<ProtectedRoute><AlterarVeiculo /></ProtectedRoute>} />
+        <Route path="/veiculos/cadastrar" element={<ProtectedRoute requiredRole="ADMIN"><CadastrarVeiculo /></ProtectedRoute>}/>
+        <Route path="/veiculo/editar/:uuid" element={<ProtectedRoute requiredRole="ADMIN"><AlterarVeiculo /></ProtectedRoute>} />
 
         <Route path="/acesso-negado" element={<AccessDenied />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

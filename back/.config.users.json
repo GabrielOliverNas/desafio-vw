@@ -24,8 +24,11 @@
         },
         "menu-menu-item-sidebar": true,
         "debug": {
-            "filter": "filterAll",
-            "filteredNodes": []
+            "filter": "filterSelected",
+            "filteredNodes": [
+                "22f1418d46eabb50",
+                "f3ddb2ec0c0cc724"
+            ]
         }
     }
 }

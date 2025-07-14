@@ -45,6 +45,24 @@
   }
 }
 
+.filtros input {
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  margin-right: 1%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 20%;
+  box-sizing: border-box;
+}
+
+.filtros select {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 10%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
 .center-wrapper {
   width: 100%;
   display: flex;

@@ -16,8 +16,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 100,
-        "y": 300,
+        "x": 1500,
+        "y": 240,
         "wires": [
             [
                 "ef41793ff7ea5a80"
@@ -36,8 +36,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 270,
-        "y": 300,
+        "x": 1670,
+        "y": 240,
         "wires": [
             [
                 "85884d926390e238"
@@ -71,8 +71,8 @@
         "maxAge": "",
         "maxAgeType": "num",
         "constraints": [],
-        "x": 480,
-        "y": 300,
+        "x": 1880,
+        "y": 240,
         "wires": [
             [
                 "ee7ca56abe9406f2"
@@ -86,8 +86,8 @@
         "name": "Resposta-HTTP",
         "statusCode": "",
         "headers": {},
-        "x": 880,
-        "y": 300,
+        "x": 2280,
+        "y": 240,
         "wires": []
     },
     {
@@ -102,8 +102,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 690,
-        "y": 300,
+        "x": 2090,
+        "y": 240,
         "wires": [
             [
                 "daafb42cae8476ed"
@@ -120,10 +120,10 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 110,
-        "y": 520,
+        "y": 1020,
         "wires": [
             [
-                "2798835ee8a62017"
+                "39d53ea750789921"
             ]
         ]
     },
@@ -132,10 +132,10 @@
         "type": "http response",
         "z": "e771a27fee406b2a",
         "name": "Resposta-HTTP",
-        "statusCode": "200",
+        "statusCode": "",
         "headers": {},
-        "x": 980,
-        "y": 520,
+        "x": 1260,
+        "y": 1000,
         "wires": []
     },
     {
@@ -143,18 +143,21 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 7",
-        "func": "let payload = msg.payload;\n\nif (!payload.name || !payload.password) {\n    msg.payload = { error: \"Campos obrigatórios: name, password.\" };\n    return [null, msg];\n}\n\nconst user = {\n    uuid: Date.now().toString(),\n    name: payload.name,\n    password: payload.password,\n    isActived: payload.isActived,\n    isRoot: payload.isRoot || \"false\",\n    roles: payload.roles,\n    creationDate: new Date().toISOString()\n};\n\nlet usuarios = flow.get('users', 'file') || [];\n\nconsole.log(usuarios)\nif (!Array.isArray(usuarios)) {\n    usuarios = [];\n}\n\nconsole.log(usuarios)\n\nusuarios.push(user);\n\nflow.set('users', usuarios, 'file');\n\nmsg.payload = user;\n\nreturn [msg, null];\n",
-        "outputs": 1,
+        "func": "try {\n    if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n        msg.statusCode = 403;\n        msg.payload = { error: 'Forbidden: Admin role required' };\n        return [null, msg];\n    }\n\n    let payload = msg.request;\n\n    const requiredFields = ['name', 'password'];\n    const missingFields = requiredFields.filter(field => !payload[field]);\n\n    if (missingFields.length > 0) {\n        msg.statusCode = 400;\n        msg.payload = { error: `Missing required fields: ${missingFields.join(', ')}` };\n        return [null, msg];\n    }\n\n    const user = {\n        uuid: Date.now().toString(),\n        name: payload.name,\n        password: payload.password,\n        isActived: payload.isActived,\n        isRoot: payload.isRoot || false,\n        creationDate: new Date().toISOString(),\n        roles: payload.isRoot ? [\"ADMIN\"] : [\"USER\"]\n    };\n\n    let users = flow.get('users', 'file') || [];\n    if (!Array.isArray(users)) {\n        users = [];\n    }\n\n    const userFound = users.find(i => i.name === payload.name);\n\n    if (userFound) {\n        msg.statusCode = 400;\n        msg.payload = { error: 'User already exists' };\n        return [null, msg];\n    }\n\n    users.push(user);\n    flow.set('users', users, 'file');\n\n    msg.statusCode = 201;\n    msg.payload = user;\n    return [msg, null];\n\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: \"Erro interno no servidor\", detail: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 740,
-        "y": 520,
+        "x": 920,
+        "y": 1020,
         "wires": [
             [
-                "ed4e5d5a240372ba"
+                "3dc84f200903ad4d"
+            ],
+            [
+                "51d2b45443ba48ea"
             ]
         ]
     },
@@ -168,10 +171,10 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 110,
-        "y": 640,
+        "y": 1200,
         "wires": [
             [
-                "22b91667282cd53c"
+                "ca92d0cf38cc8fa1"
             ]
         ]
     },
@@ -180,10 +183,10 @@
         "type": "http response",
         "z": "e771a27fee406b2a",
         "name": "Resposta-HTTP",
-        "statusCode": "200",
+        "statusCode": "",
         "headers": {},
-        "x": 980,
-        "y": 640,
+        "x": 1260,
+        "y": 1200,
         "wires": []
     },
     {
@@ -198,8 +201,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 740,
-        "y": 640,
+        "x": 800,
+        "y": 1200,
         "wires": [
             [
                 "930307daf030c5a9"
@@ -216,7 +219,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 120,
-        "y": 580,
+        "y": 1120,
         "wires": [
             [
                 "3a0b8b5abc860260"
@@ -228,10 +231,10 @@
         "type": "http response",
         "z": "e771a27fee406b2a",
         "name": "Resposta-HTTP",
-        "statusCode": "200",
+        "statusCode": "",
         "headers": {},
-        "x": 980,
-        "y": 580,
+        "x": 1260,
+        "y": 1100,
         "wires": []
     },
     {
@@ -239,39 +242,21 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 10",
-        "func": "let usuarios = flow.get('users', 'file') || [];\n\nif (!Array.isArray(usuarios)) {\n    usuarios = [];\n}\n\nconst uuid = msg.request.uuid;\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet u = usuarios.find(i => i.uuid === uuid);\n\nif (u) {\n    usuarios = usuarios.filter(i => i.uuid !== uuid);\n\n    flow.set('users', usuarios, 'file');\n\n    msg.payload = { success: true, message: \"Usuário removido com sucesso.\" };\n} else {\n    msg.payload = { error: \"Usuário não encontrado.\" };\n}\n\nreturn msg;\n",
-        "outputs": 1,
+        "func": "try {\n    if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n        msg.statusCode = 403;\n        msg.payload = { error: 'Forbidden: Admin role required' };\n        return [null, msg];\n    }\n\n    const uuid = msg.request.uuid;\n    if (!uuid) {\n        msg.statusCode = 400;\n        msg.payload = { error: 'UUID not provided' };\n        return [null, msg];\n    }\n\n    let users = flow.get('users', 'file') || [];\n    if (!Array.isArray(users)) {\n        users = [];\n    }\n\n    let u = users.find(i => i.uuid === uuid);\n    if (u) {\n        users = users.filter(i => i.uuid !== uuid);\n        flow.set('users', users, 'file');\n        msg.statusCode = 200;\n        msg.payload = { success: true, message: 'User successfully removed' };\n        return [msg, null];\n    } else {\n        msg.statusCode = 404;\n        msg.payload = { error: 'User not found with that UUID' };\n        return [null, msg];\n    }\n\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: \"Internal server error\", detail: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 730,
-        "y": 580,
+        "x": 930,
+        "y": 1120,
         "wires": [
             [
-                "849b98a3bb34bf09"
-            ]
-        ]
-    },
-    {
-        "id": "2798835ee8a62017",
-        "type": "bcrypt",
-        "z": "e771a27fee406b2a",
-        "name": "",
-        "action": "encrypt",
-        "field": "password",
-        "hash": "payload",
-        "target": "password",
-        "assignment": "replace",
-        "match": "match",
-        "outputs": 1,
-        "rounds": "5",
-        "x": 370,
-        "y": 520,
-        "wires": [
+                "3d673acd3a0ca0db"
+            ],
             [
-                "7660d8bc47aa36d6"
+                "81402899d66bf9c3"
             ]
         ]
     },
@@ -299,7 +284,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "table-colors",
-        "func": "const colors = [\n  { uuid: global.get('uuid').v4(), colorName: 'Preto' },\n  { uuid: global.get('uuid').v4(), colorName: 'Branco' },\n  { uuid: global.get('uuid').v4(), colorName: 'Vermelho' },\n  { uuid: global.get('uuid').v4(), colorName: 'Cinza' },\n  { uuid: global.get('uuid').v4(), colorName: 'Azul' }\n];\n\nglobal.set('colorsTable', colors);\n\nmsg.payload = \"Tabela de COLORS carregada.\";\nreturn msg;",
+        "func": "const names = ['Preto', 'Branco', 'Vermelho', 'Cinza', 'Azul'];\n\nconst colors = names.map((colorName, index) => {\n  return {\n    uuid: (index + 1).toString(),\n    colorName: colorName\n  };\n});\n\nglobal.set('colorsTable', colors);\n\nmsg.payload = colors;\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -336,7 +321,7 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "table-models",
-        "func": "const colors = [\n  { uuid: global.get('uuid').v4(), modelName: 'T-Cross' },\n  { uuid: global.get('uuid').v4(), modelName: 'Nivus' },\n  { uuid: global.get('uuid').v4(), modelName: 'Polo' },\n  { uuid: global.get('uuid').v4(), modelName: 'Virtus' },\n  { uuid: global.get('uuid').v4(), modelName: 'Saveiro' },\n  { uuid: global.get('uuid').v4(), modelName: 'Track' }\n];\n\nglobal.set('modelsTable', colors);\n\nmsg.payload = \"Tabela de MODELS carregada.\";\nreturn msg;",
+        "func": "const names = ['T-Cross', 'Nivus', 'Polo', 'Virtus', 'Saveiro', 'Track'];\n\nconst models = names.map((modelName, index) => {\n  return {\n    uuid: (index + 1).toString(),\n    modelName: modelName\n  };\n});\n\nglobal.set('modelsTable', models);\n\nmsg.payload = models;\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -397,7 +382,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 100,
-        "y": 700,
+        "y": 1280,
         "wires": [
             [
                 "efc2ecc451caab37"
@@ -409,10 +394,10 @@
         "type": "http response",
         "z": "e771a27fee406b2a",
         "name": "Resposta-HTTP",
-        "statusCode": "200",
+        "statusCode": "",
         "headers": {},
-        "x": 980,
-        "y": 700,
+        "x": 1260,
+        "y": 1260,
         "wires": []
     },
     {
@@ -420,18 +405,21 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 2",
-        "func": "let uuid = msg.request.uuid;\n\nconst usuarios = flow.get('users', 'file') || [];\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet usuario = usuarios.find(user => user.uuid === uuid);\n\n\nif(usuario) {\n    msg.payload = {\n        'message': 'usuario identificado',\n        'usuario': usuario\n    }\n    return msg\n}\n\nmsg.payload = {\n    'message': 'Usuario inexistente'\n}\nreturn msg;",
-        "outputs": 1,
+        "func": "try {\n    if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n        msg.statusCode = 403;\n        msg.payload = { error: 'Forbidden: Admin role required' };\n        return [null, msg];\n    }\n\n    let uuid = msg.request.uuid;\n    if (!uuid) {\n        msg.statusCode = 400;\n        msg.payload = { error: 'UUID not provided' };\n        return [null, msg];\n    }\n\n    let users = flow.get('users', 'file') || [];\n    if (!Array.isArray(users)) {\n        users = [];\n    }\n\n    let foundUser = users.find(u => u.uuid === uuid);\n    if (foundUser) {\n        msg.statusCode = 200;\n        msg.payload = foundUser;\n        return [msg, null];\n    } else {\n        msg.statusCode = 404;\n        msg.payload = { error: 'User not found with that UUID' };\n        return [null, msg];\n    }\n\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: 'Internal server error', detail: err.message };\n    return [null, msg];\n}",
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 740,
-        "y": 700,
+        "x": 940,
+        "y": 1280,
         "wires": [
             [
                 "fb009c7556ac4451"
+            ],
+            [
+                "0bea5005270b2d3b"
             ]
         ]
     },
@@ -444,8 +432,8 @@
         "method": "delete",
         "upload": false,
         "swaggerDoc": "",
-        "x": 130,
-        "y": 920,
+        "x": 1530,
+        "y": 800,
         "wires": [
             [
                 "d1f8619815780db1"
@@ -464,8 +452,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 300,
-        "y": 920,
+        "x": 1700,
+        "y": 800,
         "wires": [
             [
                 "fe527af7383f65a9"
@@ -477,18 +465,21 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "exclusao-veiculo",
-        "func": "let veiculos = flow.get('veiculo') || [];\n\nif (!Array.isArray(veiculos)) {\n    veiculos = [];\n}\n\nconst uuid = msg.request.uuid;\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado.\" };\n    return msg;\n}\n\nconst existe = veiculos.find(v => v.uuid === uuid);\n\nconsole.log('estamos aqui', veiculos)\n\n\nif (existe) {\n    veiculos = veiculos.filter(v => v.uuid !== uuid);\n    flow.set('veiculo', veiculos);\n\n    msg.payload = { success: true, message: \"Veículo removido com sucesso.\" };\n} else {\n    msg.payload = { error: \"Veículo não encontrado.\" };\n}\n\nreturn msg;\n",
-        "outputs": 1,
+        "func": "try {\n    if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n        msg.statusCode = 403;\n        msg.payload = { error: 'Forbidden: Admin role required' };\n        return [null, msg];\n    }\n\n    let veiculos = flow.get('veiculo') || [];\n    let uuid = msg.request.uuid;\n\n    if (!Array.isArray(veiculos)) {\n        veiculos = [];\n    }\n\n    if (!uuid) {\n        msg.statusCode = 400;\n        msg.payload = { error: \"UUID não informado.\" };\n        return [null, msg];\n    }\n\n    let existe = veiculos.find(v => v.uuid === uuid);\n\n    if (existe) {\n        veiculos = veiculos.filter(v => v.uuid !== uuid);\n        flow.set('veiculo', veiculos);\n\n        msg.statusCode = 200;\n        msg.payload = { success: true, message: \"Veículo removido com sucesso.\" };\n        return [msg, null];\n    } else {\n        msg.statusCode = 404;\n        msg.payload = { error: \"Veículo não encontrado.\" };\n        return [null, msg];\n    }\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: \"Internal server error\", details: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 710,
-        "y": 920,
+        "x": 2330,
+        "y": 800,
         "wires": [
             [
                 "77d797dfad31c3fc"
+            ],
+            [
+                "7c36fe1811e73e7a"
             ]
         ]
     },
@@ -497,15 +488,15 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "Gerar-log",
-        "func": "const now = new Date().toISOString();\nconst userName = msg.payload.userName;\nconst route = \"/veiculos/inserir\";\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\nlet logs = flow.get(\"logs\") || [];\nlogs.push(logEntry);\nflow.set(\"logs\", logs);\n\nmsg.payload = {\n    dateTime: now,\n    userName: msg.payload.userName,\n    route: '/veiculos/excluir',\n    data: now\n};\n\nflow.set('Logs', 'default')\n\nreturn msg;\n",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 880,
-        "y": 920,
+        "x": 2560,
+        "y": 780,
         "wires": [
             [
                 "8a59134bcd54faba"
@@ -519,8 +510,8 @@
         "name": "Resposta-HTTP",
         "statusCode": "",
         "headers": {},
-        "x": 1060,
-        "y": 920,
+        "x": 2760,
+        "y": 780,
         "wires": []
     },
     {
@@ -528,18 +519,21 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 5",
-        "func": "try {\n  let veiculos = flow.get('veiculo') || [];\n  let request = msg.request;\n  let creationDate = new Date().toISOString();\n\n  const novoVeiculo = {\n    uuid: Date.now().toString(),\n    creationUserName: request.creationUserName,\n    updateUserName: request.updateUserName,\n    creationDate: creationDate,\n    model: request.modelName,\n    color: request.colorName,\n    year: request.year,\n    imagePath: request.imagePath\n  };\n\n  veiculos.push(novoVeiculo);\n\n  flow.set('veiculo', veiculos);\n\n  msg.payload = {\n    status: 'sucesso',\n    message: \"Veículo inserido com sucesso!\",\n    total: veiculos.length,\n    veiculo: novoVeiculo\n  };\n  return msg;\n\n} catch (err) {\n  msg.payload = { status: 'erro', message: \"Erro ao inserir veículo: \" + err.message };\n  return msg;\n}\n",
-        "outputs": 1,
+        "func": "try {\n  if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n    msg.statusCode = 403;\n    msg.payload = { error: 'Forbidden: Admin role required' };\n    return [null, msg];\n  }\n\n  let veiculos = flow.get('veiculo') || [];\n  let request = msg.request;\n  let creationDate = new Date().toISOString();\n\n  let models = global.get('modelsTable') || [];\n  let colors = global.get('colorsTable') || [];\n\n  const modelfound = models.find(i => i.uuid === request.modelUuid);\n  const colorfound = colors.find(i => i.uuid === request.colorUuid);\n\n  if (!modelfound || !colorfound) {\n    msg.statusCode = 400;\n    msg.payload = { error: 'Model or Color not found' };\n    return [null, msg];\n  }\n\n  const novoVeiculo = {\n    uuid: Date.now().toString(),\n    creationUserName: msg.user.name,\n    updateUserName: request.updateUserName,\n    creationDate: creationDate,\n    model: modelfound,\n    color: colorfound,\n    year: request.year,\n    imagePath: request.imagePath\n  };\n\n  veiculos.push(novoVeiculo);\n\n  flow.set('veiculo', veiculos);\n\n  msg.statusCode = 201;\n  msg.payload = {\n    status: 'sucesso',\n    message: \"Veículo inserido com sucesso!\",\n    total: veiculos.length,\n    veiculo: novoVeiculo\n  };\n  return [msg, null];\n\n} catch (err) {\n  msg.statusCode = 500;\n  msg.payload = { error: 'Internal server error', detail: err.message };\n  return [null, msg];\n}\n",
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 720,
-        "y": 800,
+        "x": 2380,
+        "y": 620,
         "wires": [
             [
-                "da434780bf5badd5"
+                "c9f68b992138402e"
+            ],
+            [
+                "9b29050649c69b72"
             ]
         ]
     },
@@ -552,8 +546,8 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 110,
-        "y": 800,
+        "x": 1510,
+        "y": 620,
         "wires": [
             [
                 "994f2b227115dc48"
@@ -564,11 +558,11 @@
         "id": "c24ce0c9eb711bba",
         "type": "http response",
         "z": "e771a27fee406b2a",
-        "name": "",
+        "name": "Resposta-HTTP",
         "statusCode": "",
         "headers": {},
-        "x": 1090,
-        "y": 800,
+        "x": 2760,
+        "y": 600,
         "wires": []
     },
     {
@@ -583,8 +577,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 290,
-        "y": 800,
+        "x": 1690,
+        "y": 620,
         "wires": [
             [
                 "fe5513e8b01be357"
@@ -618,31 +612,11 @@
         "maxAge": "",
         "maxAgeType": "num",
         "constraints": [],
-        "x": 500,
-        "y": 800,
+        "x": 1900,
+        "y": 620,
         "wires": [
             [
-                "aaa8c237613f7719"
-            ]
-        ]
-    },
-    {
-        "id": "da434780bf5badd5",
-        "type": "function",
-        "z": "e771a27fee406b2a",
-        "name": "Gerar-log",
-        "func": "const now = new Date().toISOString();\nconst userName = msg.payload.userName;\nconst route = \"/veiculos/inserir\";\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 920,
-        "y": 800,
-        "wires": [
-            [
-                "c24ce0c9eb711bba"
+                "60b28f9c1a0ac5b8"
             ]
         ]
     },
@@ -650,13 +624,13 @@
         "id": "d3e38b360fbae5dc",
         "type": "http in",
         "z": "e771a27fee406b2a",
-        "name": "listar-veiculos",
-        "url": "/listar-veiculos",
-        "method": "get",
+        "name": "listar-veiculos-paginado",
+        "url": "/listar-veiculos-paginado",
+        "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 110,
-        "y": 860,
+        "x": 1540,
+        "y": 720,
         "wires": [
             [
                 "6c683a78c4fff1fe"
@@ -675,8 +649,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 330,
-        "y": 860,
+        "x": 1750,
+        "y": 720,
         "wires": [
             [
                 "7c1502a697e580f8"
@@ -688,18 +662,21 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 6",
-        "func": "let veiculos = flow.get('veiculo') || [];\n\nif (!Array.isArray(veiculos)) {\n  veiculos = [];\n}\n\nmsg.payload = veiculos;\nreturn msg;",
-        "outputs": 1,
+        "func": "try {\n    let vehicles = flow.get('veiculo') || [];\n    let payload = msg.request;\n\n    if (!Array.isArray(vehicles)) {\n        vehicles = [];\n    }\n\n    const search = (payload.search || \"\").toLowerCase();\n    const sortField = payload.sortField || \"\";\n    const sortOrder = payload.sortOrder === \"desc\" ? \"desc\" : \"asc\";\n    const page = parseInt(payload.page) || 1;\n    const limit = parseInt(payload.limit) || 5;\n\n    let filtered = vehicles.filter(v => {\n        const model = v.model?.modelName?.toLowerCase() || \"\";\n        const color = v.color?.colorName?.toLowerCase() || \"\";\n        const year = v.year?.toString() || \"\";\n        const creator = v.creationUserName?.toLowerCase() || \"\";\n\n        return (\n            model.includes(search) ||\n            color.includes(search) ||\n            year.includes(search) ||\n            creator.includes(search)\n        );\n    });\n\n    if (sortField) {\n        filtered.sort((a, b) => {\n            let aValue, bValue;\n\n            switch (sortField) {\n                case \"model\":\n                    aValue = a.model?.modelName?.toLowerCase() || \"\";\n                    bValue = b.model?.modelName?.toLowerCase() || \"\";\n                    break;\n                case \"color\":\n                    aValue = a.color?.colorName?.toLowerCase() || \"\";\n                    bValue = b.color?.colorName?.toLowerCase() || \"\";\n                    break;\n                case \"year\":\n                    aValue = a.year || 0;\n                    bValue = b.year || 0;\n                    break;\n                case \"creationDate\":\n                    aValue = new Date(a.creationDate).getTime() || 0;\n                    bValue = new Date(b.creationDate).getTime() || 0;\n                    break;\n                default:\n                    aValue = \"\";\n                    bValue = \"\";\n            }\n\n            if (aValue < bValue) return sortOrder === \"asc\" ? -1 : 1;\n            if (aValue > bValue) return sortOrder === \"asc\" ? 1 : -1;\n            return 0;\n        });\n    }\n\n    const total = filtered.length;\n    const start = (page - 1) * limit;\n    const end = start + limit;\n    const paginated = filtered.slice(start, end);\n\n    msg.statusCode = 200;\n    msg.payload = {\n        total: total,\n        page: page,\n        limit: limit,\n        data: paginated\n    };\n\n    return [msg, null];\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: \"Internal server error\", details: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 840,
-        "y": 860,
+        "x": 2400,
+        "y": 720,
         "wires": [
             [
                 "cd8d5dd2c1e92c9d"
+            ],
+            [
+                "13ada1433c96a6b1"
             ]
         ]
     },
@@ -707,11 +684,11 @@
         "id": "cd8d5dd2c1e92c9d",
         "type": "http response",
         "z": "e771a27fee406b2a",
-        "name": "",
+        "name": "Resposta-HTTP",
         "statusCode": "",
         "headers": {},
-        "x": 1090,
-        "y": 860,
+        "x": 2760,
+        "y": 700,
         "wires": []
     },
     {
@@ -724,10 +701,10 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 110,
-        "y": 460,
+        "y": 920,
         "wires": [
             [
-                "74415834210c7a06"
+                "22861edba5d0cb71"
             ]
         ]
     },
@@ -736,73 +713,21 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 4",
-        "func": "let usuarios = flow.get('users', 'file') || [];\nlet updateDate = new Date().toISOString();\n\nif (!Array.isArray(usuarios)) {\n    usuarios = [];\n}\n\nlet requisicao = msg.request;\nconst uuid = requisicao.uuid;\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet u = usuarios.find(i => i.uuid === uuid);\nlet usuarioAlterado;\n\nif (u) {\n\n    requisicao.uuid = uuid;\n    requisicao.updateDate = updateDate;\n    requisicao.creationDate = u.creationDate;\n    \n    console.log('asdfasdf', requisicao)\n    console.log('asdfasdf', u)\n\n    usuarios = usuarios.filter(i => i.uuid !== uuid);\n    usuarios.push(requisicao);\n    flow.set('users', usuarios, 'file')\n} else {\n    msg.payload = { error: \"Usuário não encontrado\" };\n}\n\nreturn msg;",
-        "outputs": 1,
+        "func": "try {\n    const request = msg.request;\n    const uuid = request.uuid;\n\n    const requiredFields = ['uuid', 'name', 'password'];\n    const missingFields = requiredFields.filter(field => !request[field]);\n\n    if (missingFields.length > 0) {\n        msg.statusCode = 400;\n        msg.payload = { error: `Missing required fields: ${missingFields.join(', ')}` };\n        return [null, msg];\n    }\n\n    let users = flow.get('users', 'file') || [];\n    let updateDate = new Date().toISOString();\n\n    if (!Array.isArray(users)) {\n        users = [];\n    }\n\n    let u = users.find(i => i.uuid === uuid);\n\n    if (u) {\n        request.uuid = uuid;\n        request.updateDate = updateDate;\n        request.creationDate = u.creationDate;\n        request.roles = request.roles || u.roles;\n\n        console.log(msg.user.roles)\n\n        if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n            msg.statusCode = 403;\n            msg.payload = { error: 'Forbidden: Admin role required' };\n            return [null, msg];\n        }\n\n        users = users.filter(i => i.uuid !== uuid);\n        users.push(request);\n        flow.set('users', users, 'file');\n\n        msg.statusCode = 200;\n        msg.payload = { message: 'User updated successfully', user: request };\n        return [msg, null];\n    } else {\n        msg.statusCode = 404;\n        msg.payload = { error: 'User not found with that UUID' };\n        return [null, msg];\n    }\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: 'Internal server error', detail: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 640,
-        "y": 460,
+        "x": 920,
+        "y": 920,
         "wires": [
             [
                 "3176f7dc4c9017d7"
-            ]
-        ]
-    },
-    {
-        "id": "74415834210c7a06",
-        "type": "function",
-        "z": "e771a27fee406b2a",
-        "name": "formatar jwt",
-        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Token não enviado ou mal formatado\" };\n    return [null, msg];\n}",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 270,
-        "y": 460,
-        "wires": [
+            ],
             [
-                "d898e96cde341d69"
-            ]
-        ]
-    },
-    {
-        "id": "d898e96cde341d69",
-        "type": "jwt verify",
-        "z": "e771a27fee406b2a",
-        "name": "Validar-Geracao-JWT",
-        "algorithms": "HS256",
-        "mode": "secret",
-        "secret": "jwtSecret",
-        "secretType": "msg",
-        "publicKey": "",
-        "publicKeyType": "str",
-        "jwkid": "",
-        "jwkidType": "str",
-        "jwkurl": "",
-        "jwkurlType": "str",
-        "ignoreExpiration": "false",
-        "ignoreExpirationType": "bool",
-        "ignoreNotBefore": "true",
-        "ignoreNotBeforeType": "bool",
-        "audience": "",
-        "audienceType": "str",
-        "issuer": "",
-        "issuerType": "str",
-        "token": "token",
-        "maxAge": "",
-        "maxAgeType": "num",
-        "constraints": [],
-        "x": 460,
-        "y": 460,
-        "wires": [
-            [
-                "ae1a2dce88636532"
+                "14b7e371c281b148"
             ]
         ]
     },
@@ -811,10 +736,10 @@
         "type": "http response",
         "z": "e771a27fee406b2a",
         "name": "Resposta-HTTP",
-        "statusCode": "200",
+        "statusCode": "",
         "headers": {},
-        "x": 980,
-        "y": 460,
+        "x": 1260,
+        "y": 900,
         "wires": []
     },
     {
@@ -826,8 +751,8 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 90,
-        "y": 360,
+        "x": 1490,
+        "y": 320,
         "wires": [
             [
                 "fae8ccc85c33ef61"
@@ -839,18 +764,21 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 11",
-        "func": "let usuarios = flow.get('users', 'file') || [];\nlet usuarioRequest = msg.payload;\nlet usuarioAdmin;\n\nif (!Array.isArray(usuarios)) {\n\n    usuarios = [];\n\n    if(usuarioRequest.name === 'admin' && usuarioRequest.password === 'admin') {\n        usuarios.push(usuarioRequest);\n    }\n}\n\nlet user = (usuarios.find(i =>\n    i.name === usuarioRequest.name && i.password === usuarioRequest.password)\n)\n\nif (!user) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Invalid credentials\" };\n    return [null, msg];\n}\n\nmsg.user = {\n    name: user.name,\n    roles: user.roles\n};\n\nreturn msg;",
-        "outputs": 1,
+        "func": "try {\n    let usuarios = flow.get('users', 'file') || [];\n    let usuarioRequest = msg.payload;\n\n    if (!Array.isArray(usuarios)) {\n        usuarios = [];\n        if (usuarios.length === 0) {\n            usuarios.push({\n                name: 'admin',\n                password: 'admin',\n                roles: ['ADMIN']\n            });\n        }\n    }\n\n    let user = usuarios.find(u =>\n        u.name === usuarioRequest.name &&\n        u.password === usuarioRequest.password\n    );\n\n    if (!user) {\n        msg.statusCode = 401;\n        msg.payload = { error: \"Invalid credentials\" };\n\n        console.log('user', usuarioRequest)\n        return [null, msg];\n    }\n    \n    msg.user = {\n        name: user.name,\n        roles: user.roles || ['USER']\n    };\n\n    return [msg, null];\n\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: \"Internal server error\", detail: err.message };\n    return [null, msg];\n}",
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 250,
-        "y": 360,
+        "x": 1650,
+        "y": 320,
         "wires": [
             [
                 "4bbc06ba0a7cefc6"
+            ],
+            [
+                "64033be791c9671b"
             ]
         ]
     },
@@ -861,8 +789,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 910,
-        "y": 360,
+        "x": 2310,
+        "y": 300,
         "wires": []
     },
     {
@@ -877,8 +805,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 430,
-        "y": 360,
+        "x": 1830,
+        "y": 300,
         "wires": [
             [
                 "664438f386876268"
@@ -910,8 +838,8 @@
         "signType": "msg",
         "notBefore": "",
         "notBeforeType": "num",
-        "x": 590,
-        "y": 360,
+        "x": 1990,
+        "y": 300,
         "wires": [
             [
                 "466fe941650891c4"
@@ -930,8 +858,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 750,
-        "y": 360,
+        "x": 2150,
+        "y": 300,
         "wires": [
             [
                 "ba6d3e4576690e8d"
@@ -950,8 +878,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 290,
-        "y": 640,
+        "x": 310,
+        "y": 1200,
         "wires": [
             [
                 "266e2ac5e9ae2868"
@@ -970,8 +898,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 290,
-        "y": 700,
+        "x": 310,
+        "y": 1280,
         "wires": [
             [
                 "2ac942dd4fafd962"
@@ -1005,11 +933,11 @@
         "maxAge": "",
         "maxAgeType": "num",
         "constraints": [],
-        "x": 540,
-        "y": 700,
+        "x": 560,
+        "y": 1280,
         "wires": [
             [
-                "b7ccf828195daa9d"
+                "1341a80149fd318a"
             ]
         ]
     },
@@ -1018,15 +946,15 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "Gerar-log",
-        "func": "const now = new Date().toISOString();\n\nconst userName = msg.payload.name;\nconst route = \"/veiculos/inserir\";\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 800,
-        "y": 460,
+        "x": 1080,
+        "y": 900,
         "wires": [
             [
                 "2850e51dc8b3dbda"
@@ -1046,7 +974,7 @@
         "finalize": "",
         "libs": [],
         "x": 310,
-        "y": 580,
+        "y": 1120,
         "wires": [
             [
                 "faa11aa113e8e6bd"
@@ -1080,11 +1008,11 @@
         "maxAge": "",
         "maxAgeType": "num",
         "constraints": [],
-        "x": 520,
-        "y": 580,
+        "x": 560,
+        "y": 1120,
         "wires": [
             [
-                "5718d44be8d4de38"
+                "06f7857f7ba29cab"
             ]
         ]
     },
@@ -1115,8 +1043,8 @@
         "maxAge": "",
         "maxAgeType": "num",
         "constraints": [],
-        "x": 520,
-        "y": 640,
+        "x": 560,
+        "y": 1200,
         "wires": [
             [
                 "22b91667282cd53c"
@@ -1150,11 +1078,11 @@
         "maxAge": "",
         "maxAgeType": "num",
         "constraints": [],
-        "x": 480,
-        "y": 920,
+        "x": 1880,
+        "y": 800,
         "wires": [
             [
-                "6536798f2570ce67"
+                "2fdc89e5377ae90d"
             ]
         ]
     },
@@ -1185,11 +1113,11 @@
         "maxAge": "",
         "maxAgeType": "num",
         "constraints": [],
-        "x": 580,
-        "y": 860,
+        "x": 1980,
+        "y": 720,
         "wires": [
             [
-                "416ee531ccb7dcc6"
+                "9caf103f87d25d72"
             ]
         ]
     },
@@ -1197,13 +1125,13 @@
         "id": "aff74b7dce384112",
         "type": "http in",
         "z": "e771a27fee406b2a",
-        "name": "colors",
+        "name": "listar-colors",
         "url": "/colors",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 90,
-        "y": 200,
+        "x": 110,
+        "y": 220,
         "wires": [
             [
                 "2d7707838c0525c5"
@@ -1222,8 +1150,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 230,
-        "y": 200,
+        "x": 320,
+        "y": 220,
         "wires": [
             [
                 "0ce68cce514a52c6"
@@ -1237,21 +1165,21 @@
         "name": "Resposta-HTTP",
         "statusCode": "",
         "headers": {},
-        "x": 400,
-        "y": 200,
+        "x": 520,
+        "y": 220,
         "wires": []
     },
     {
         "id": "c389ed6fc6b93f26",
         "type": "http in",
         "z": "e771a27fee406b2a",
-        "name": "models",
+        "name": "listar-models",
         "url": "/models",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 90,
-        "y": 240,
+        "x": 110,
+        "y": 520,
         "wires": [
             [
                 "a638a01bb2ee90be"
@@ -1264,17 +1192,20 @@
         "z": "e771a27fee406b2a",
         "name": "function 9",
         "func": "msg.payload = global.get('modelsTable');\n\nreturn msg;",
-        "outputs": 1,
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 230,
-        "y": 240,
+        "x": 320,
+        "y": 520,
         "wires": [
             [
                 "f9b512136bf6f7ed"
+            ],
+            [
+                "87f5bb005dd0f91b"
             ]
         ]
     },
@@ -1285,8 +1216,8 @@
         "name": "Resposta-HTTP",
         "statusCode": "",
         "headers": {},
-        "x": 400,
-        "y": 240,
+        "x": 540,
+        "y": 480,
         "wires": []
     },
     {
@@ -1298,8 +1229,8 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 120,
-        "y": 980,
+        "x": 1520,
+        "y": 860,
         "wires": [
             [
                 "7afb33d92f016d56"
@@ -1313,8 +1244,8 @@
         "name": "Resposta-HTTP",
         "statusCode": "200",
         "headers": {},
-        "x": 1060,
-        "y": 980,
+        "x": 2760,
+        "y": 860,
         "wires": []
     },
     {
@@ -1322,18 +1253,21 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 13",
-        "func": "let uuid = msg.request.uuid;\n\n\nconsole.log('veiculos')\nconst veiculos = flow.get('veiculo') || [];\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet veiculo = veiculos.find(veiculo => veiculo.uuid === uuid);\n\nif(veiculo) {\n    msg.payload = {\n        'message': 'veiculo identificado',\n        'veiculo': veiculo\n    }\n    return msg\n}\n\nmsg.payload = {\n    'message': 'Usuario inexistente'\n}\nreturn msg;",
-        "outputs": 1,
+        "func": "try {\n  if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n    msg.statusCode = 403;\n    msg.payload = { error: 'Forbidden: Admin role required' };\n    return [null, msg];\n  }\n\n  const veiculos = flow.get('veiculo') || [];\n  const uuid = msg.request.uuid;\n\n  if (!uuid) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"UUID não informado\" };\n    return [null, msg];\n  }\n\n  const veiculo = veiculos.find(v => v.uuid === uuid);\n\n  if (veiculo) {\n    msg.statusCode = 200;\n    msg.payload = {\n      message: 'Veículo identificado',\n      veiculo: veiculo\n    };\n    return [msg, null];\n  } else {\n    msg.statusCode = 404;\n    msg.payload = {\n      error: 'Veículo inexistente'\n    };\n    return [null, msg];\n  }\n} catch (err) {\n  msg.statusCode = 500;\n  msg.payload = { error: \"Internal server error\", details: err.message };\n  return [null, msg];\n}\n",
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 830,
-        "y": 980,
+        "x": 2430,
+        "y": 860,
         "wires": [
             [
                 "c0795fb9745f1567"
+            ],
+            [
+                "b6a5b3757c6685ae"
             ]
         ]
     },
@@ -1349,8 +1283,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 350,
-        "y": 980,
+        "x": 1750,
+        "y": 860,
         "wires": [
             [
                 "6c88b8c6dec4d6b7"
@@ -1384,11 +1318,11 @@
         "maxAge": "",
         "maxAgeType": "num",
         "constraints": [],
-        "x": 580,
-        "y": 980,
+        "x": 1980,
+        "y": 860,
         "wires": [
             [
-                "e156779fadeeb85e"
+                "89f666e00b415f9a"
             ]
         ]
     },
@@ -1401,8 +1335,8 @@
         "method": "put",
         "upload": false,
         "swaggerDoc": "",
-        "x": 120,
-        "y": 1040,
+        "x": 1520,
+        "y": 960,
         "wires": [
             [
                 "0969ae314d9b20fa"
@@ -1416,8 +1350,8 @@
         "name": "Resposta-HTTP",
         "statusCode": "200",
         "headers": {},
-        "x": 1060,
-        "y": 1040,
+        "x": 2760,
+        "y": 940,
         "wires": []
     },
     {
@@ -1425,18 +1359,21 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "function 14",
-        "func": "let veiculos = flow.get('veiculo') || [];\nlet updateDate = new Date().toISOString();\n\nif (!Array.isArray(veiculos)) {\n    veiculos = [];\n}\n\nconst requisicao = msg.request;\nconst uuid = requisicao.uuid;\n\nif (!uuid) {\n    msg.payload = { error: \"UUID não informado\" };\n    return msg;\n}\n\nlet veiculoExistente = veiculos.find(v => v.uuid === uuid);\nif (!veiculoExistente) {\n    msg.payload = { error: \"Veículo não encontrado\" };\n    return msg;\n}\n\n// Lista models e colors salvos\nlet models = flow.get('models') || [];\nlet colors = flow.get('colors') || [];\n\nlet modelObj = models.find(m => m.uuid === requisicao.modelUuid);\nlet colorObj = colors.find(c => c.uuid === requisicao.colorUuid);\n\nconsole.log(requisicao.modelUuid)\nconsole.log(requisicao.colorUuid)\n\nif (!modelObj || !colorObj) {\n    msg.payload = { error: \"Model ou Color não encontrado\" };\n    return msg;\n}\n\nlet veiculoAtualizado = {\n    uuid: uuid,\n    model: { uuid: modelObj.uuid, modelName: modelObj.modelName },\n    color: { uuid: colorObj.uuid, colorName: colorObj.colorName },\n    year: requisicao.year,\n    imagePath: requisicao.imagePath,\n    creationUserName: veiculoExistente.creationUserName,\n    creationDate: veiculoExistente.creationDate,\n    updateDate: updateDate\n};\n\n// Remove e reinsere\nveiculos = veiculos.filter(v => v.uuid !== uuid);\nveiculos.push(veiculoAtualizado);\nflow.set('veiculo', veiculos);\n\nmsg.payload = { message: \"Veículo atualizado\", veiculo: veiculoAtualizado };\nreturn msg;\n",
-        "outputs": 1,
+        "func": "try {\n  if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n    msg.statusCode = 403;\n    msg.payload = { error: 'Forbidden: Admin role required' };\n    return [null, msg];\n  }\n\n  const requisicao = msg.request;\n  const uuid = requisicao.uuid;\n\n  let veiculos = flow.get('veiculo') || [];\n  if (!Array.isArray(veiculos)) {\n    veiculos = [];\n  }\n\n  if (!uuid) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"UUID não informado\" };\n    return [null, msg];\n  }\n\n  const veiculoExistente = veiculos.find(v => v.uuid === uuid);\n  if (!veiculoExistente) {\n    msg.statusCode = 404;\n    msg.payload = { error: \"Veículo não encontrado\" };\n    return [null, msg];\n  }\n\n  veiculos = veiculos.filter(v => v.uuid !== uuid);\n\n  const models = global.get('modelsTable') || [];\n  const colors = global.get('colorsTable') || [];\n\n  const modelFound = models.find(m => m.uuid === requisicao.modelUuid);\n  const colorFound = colors.find(c => c.uuid === requisicao.colorUuid);\n\n  if (!modelFound || !colorFound) {\n    msg.statusCode = 404;\n    msg.payload = { error: \"Modelo ou cor não encontrado\" };\n    return [null, msg];\n  }\n\n  const updateDate = new Date().toISOString();\n\n  const veiculoAtualizado = {\n    uuid: uuid,\n    model: modelFound,\n    color: colorFound,\n    year: requisicao.year,\n    imagePath: requisicao.imagePath,\n    creationUserName: veiculoExistente.creationUserName,\n    creationDate: veiculoExistente.creationDate,\n    updateDate: updateDate\n  };\n\n  veiculos.push(veiculoAtualizado);\n  flow.set('veiculo', veiculos);\n\n  msg.statusCode = 200;\n  msg.payload = { message: \"Veículo atualizado\", veiculo: veiculoAtualizado };\n  return [msg, null];\n\n} catch (err) {\n  msg.statusCode = 500;\n  msg.payload = { error: \"Internal server error\", details: err.message };\n  return [null, msg];\n}\n",
+        "outputs": 2,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 830,
-        "y": 1040,
+        "x": 2430,
+        "y": 960,
         "wires": [
             [
-                "ee40c14b1363bb74"
+                "f754a25c3cd49254"
+            ],
+            [
+                "139ee79fc85ad8dc"
             ]
         ]
     },
@@ -1452,8 +1389,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 350,
-        "y": 1040,
+        "x": 1750,
+        "y": 960,
         "wires": [
             [
                 "7d72608e25a2022c"
@@ -1487,11 +1424,11 @@
         "maxAge": "",
         "maxAgeType": "num",
         "constraints": [],
-        "x": 580,
-        "y": 1040,
+        "x": 1980,
+        "y": 960,
         "wires": [
             [
-                "989282fe68c0a670"
+                "67c8b447696efcc4"
             ]
         ]
     },
@@ -1500,15 +1437,15 @@
         "type": "function",
         "z": "e771a27fee406b2a",
         "name": "user-admin-inject",
-        "func": "const user = {\n    name: 'admin',\n    password: 'admin',\n    isActived: true,\n    isRoot: true,\n    roles: ['ADMIN', 'USER']\n};\n\nflow.set('users', user, 'file')\n\nreturn msg;",
+        "func": "let users = [\n    {\n        uuid: Date.now().toString(),\n        name: 'admin',\n        password: 'admin',\n        isActived: true,\n        isRoot: true,\n        roles: ['ADMIN'],\n        creationDate: new Date().toISOString()\n    },\n    {\n        uuid: Date.now().toString(),\n        name: 'admin1',\n        password: 'admin1',\n        isActived: true,\n        isRoot: false,\n        roles: ['USER'],\n        creationDate: new Date().toISOString()\n    }\n]\n\nflow.set('users', users, 'file')\n\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 330,
-        "y": 140,
+        "x": 930,
+        "y": 60,
         "wires": [
             [
                 "f3ddb2ec0c0cc724"
@@ -1526,8 +1463,8 @@
         "once": true,
         "onceDelay": "0.1",
         "topic": "",
-        "x": 130,
-        "y": 140,
+        "x": 730,
+        "y": 60,
         "wires": [
             [
                 "0e04395aa3b2a946"
@@ -1547,8 +1484,1489 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 530,
-        "y": 140,
+        "x": 1130,
+        "y": 60,
         "wires": []
+    },
+    {
+        "id": "64033be791c9671b",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1810,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "22861edba5d0cb71",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "formatar jwt",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Token not sent or poorly formatted' };\n    return [null, msg];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 920,
+        "wires": [
+            [
+                "4de884239c348433"
+            ]
+        ]
+    },
+    {
+        "id": "4de884239c348433",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 480,
+        "y": 920,
+        "wires": [
+            [
+                "ebd5b077b8ee5dcb"
+            ]
+        ]
+    },
+    {
+        "id": "39d53ea750789921",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "formatar jwt",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: \"Token não enviado ou mal formatado\" };\n    return [null, msg];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 1020,
+        "wires": [
+            [
+                "71f5669e6807c7a1"
+            ]
+        ]
+    },
+    {
+        "id": "71f5669e6807c7a1",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 520,
+        "y": 1020,
+        "wires": [
+            [
+                "b979263c9ec503fd"
+            ]
+        ]
+    },
+    {
+        "id": "14b7e371c281b148",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "51d2b45443ba48ea",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "81402899d66bf9c3",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "0bea5005270b2d3b",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "ebd5b077b8ee5dcb",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 920,
+        "wires": [
+            [
+                "ae1a2dce88636532"
+            ]
+        ]
+    },
+    {
+        "id": "b979263c9ec503fd",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 1020,
+        "wires": [
+            [
+                "7660d8bc47aa36d6"
+            ]
+        ]
+    },
+    {
+        "id": "06f7857f7ba29cab",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 1120,
+        "wires": [
+            [
+                "5718d44be8d4de38"
+            ]
+        ]
+    },
+    {
+        "id": "1341a80149fd318a",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 1280,
+        "wires": [
+            [
+                "b7ccf828195daa9d"
+            ]
+        ]
+    },
+    {
+        "id": "60b28f9c1a0ac5b8",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2110,
+        "y": 620,
+        "wires": [
+            [
+                "aaa8c237613f7719"
+            ]
+        ]
+    },
+    {
+        "id": "9caf103f87d25d72",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2190,
+        "y": 720,
+        "wires": [
+            [
+                "416ee531ccb7dcc6"
+            ]
+        ]
+    },
+    {
+        "id": "2fdc89e5377ae90d",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2090,
+        "y": 800,
+        "wires": [
+            [
+                "6536798f2570ce67"
+            ]
+        ]
+    },
+    {
+        "id": "89f666e00b415f9a",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2210,
+        "y": 860,
+        "wires": [
+            [
+                "e156779fadeeb85e"
+            ]
+        ]
+    },
+    {
+        "id": "67c8b447696efcc4",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2210,
+        "y": 960,
+        "wires": [
+            [
+                "989282fe68c0a670"
+            ]
+        ]
+    },
+    {
+        "id": "9b29050649c69b72",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 2760,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "7c36fe1811e73e7a",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 2760,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "b6a5b3757c6685ae",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 2760,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "139ee79fc85ad8dc",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 2760,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "a602ad2d07635062",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "logs",
+        "url": "/logs",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 1490,
+        "y": 400,
+        "wires": [
+            [
+                "68cb5766b0f80dd0"
+            ]
+        ]
+    },
+    {
+        "id": "68cb5766b0f80dd0",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "gerar-log",
+        "func": "msg.payload = flow.get(\"logs\") || [];\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1640,
+        "y": 400,
+        "wires": [
+            [
+                "62aa93bb0cbef7c3"
+            ]
+        ]
+    },
+    {
+        "id": "62aa93bb0cbef7c3",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1820,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "3dc84f200903ad4d",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "Gerar-log",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 1000,
+        "wires": [
+            [
+                "ed4e5d5a240372ba"
+            ]
+        ]
+    },
+    {
+        "id": "f754a25c3cd49254",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "Gerar-log",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2580,
+        "y": 940,
+        "wires": [
+            [
+                "ee40c14b1363bb74"
+            ]
+        ]
+    },
+    {
+        "id": "854c5dfbb2bb953d",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "inserir-color",
+        "url": "/inserir-colors",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 280,
+        "wires": [
+            [
+                "20ffe12c52d1ba5f"
+            ]
+        ]
+    },
+    {
+        "id": "4a0b0b0dc399faa0",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "inserir-colors",
+        "func": "try {\n    if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n        msg.statusCode = 403;\n        msg.payload = { error: 'Forbidden: Admin role required' };\n        return [null, msg];\n    }\n\n    let request = msg.request;\n    let colors = global.get('colorsTable') || [];\n    \n    let nextId = 1;\n    if (colors.length > 0) {\n        const ids = colors.map(c => Number(c.uuid));\n        nextId = Math.max(...ids) + 1;\n    }\n\n    let colorExists = colors.find(c => c.colorName === request.colorName);\n    if (colorExists) {\n        msg.statusCode = 200;\n        msg.payload = colorExists;\n        return [msg, null];\n    }\n\n    const newColor = {\n        uuid: nextId.toString(),\n        colorName: request.colorName\n    };\n\n    colors.push(newColor);\n\n    flow.set('colorsTable', colors);\n\n    msg.statusCode = 200;\n    msg.payload = newColor;\n    return [msg, null];\n\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: \"Internal server error\", detail: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 280,
+        "wires": [
+            [
+                "6c4e430d22fa9860"
+            ],
+            [
+                "2ac47b027aa16b6f"
+            ]
+        ]
+    },
+    {
+        "id": "9702f0003ce3f4c7",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "26838785063fb7e3",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "alterar-colors-id",
+        "url": "/alterar-colors-id",
+        "method": "put",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 340,
+        "wires": [
+            [
+                "51e80797b28c247c"
+            ]
+        ]
+    },
+    {
+        "id": "065f016ba0887085",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "alterar-color",
+        "func": "try {\n    const request = msg.request;\n    const uuid = request.uuid;\n    const requiredFields = ['uuid', 'colorName'];\n    const missingFields = requiredFields.filter(field => !request[field]);\n\n    if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n        msg.statusCode = 403;\n        msg.payload = { error: 'Forbidden: Admin role required' };\n        return [null, msg];\n    }\n\n    if (missingFields.length > 0) {\n        msg.statusCode = 400;\n        msg.payload = { error: `Missing required fields: ${missingFields.join(', ')}` };\n        return [null, msg];\n    }\n\n    let colors = global.get('colorsTable') || [];\n    if (!Array.isArray(colors)) {\n        colors = [];\n    }\n\n    let c = colors.find(i => i.uuid === uuid);\n    if (c) {\n        request.uuid = uuid;\n\n        colors = colors.filter(i => i.uuid !== uuid);\n        colors.push(request);\n        global.set('colorsTable', colors);\n\n        msg.statusCode = 200;\n        msg.payload = { message: 'Color updated successfully', color: request };\n        return [msg, null];\n    } else {\n        msg.statusCode = 404;\n        msg.payload = { error: 'Color not found with that UUID' };\n        return [null, msg];\n    }\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: 'Internal server error', detail: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 340,
+        "wires": [
+            [
+                "73ac6b2c5e9f2d22"
+            ],
+            [
+                "4c1e9af6ec577f99"
+            ]
+        ]
+    },
+    {
+        "id": "7dd94797087764fb",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "1e81ef4aed2ce81b",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "deletar-color-id",
+        "url": "/deletar-color-id",
+        "method": "delete",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 420,
+        "wires": [
+            [
+                "51c7c5c359329ecb"
+            ]
+        ]
+    },
+    {
+        "id": "ba89a19d0ed113e0",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "deletar-color",
+        "func": "try {\n    if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n        msg.statusCode = 403;\n        msg.payload = { error: 'Forbidden: Admin role required' };\n        return [null, msg];\n    }\n\n    const uuid = msg.request.uuid;\n    if (!uuid) {\n        msg.statusCode = 400;\n        msg.payload = { error: 'UUID not provided' };\n        return [null, msg];\n    }\n\n    let colors = global.get('colorsTable') || [];\n    if (!Array.isArray(colors)) {\n        colors = [];\n    }\n\n    let color = colors.find(c => c.uuid === uuid);\n    if (color) {\n        colors = colors.filter(c => c.uuid !== uuid);\n        global.set('colorsTable', colors);\n        msg.statusCode = 200;\n        msg.payload = { success: true, message: 'Color successfully removed' };\n        return [msg, null];\n    } else {\n        msg.statusCode = 404;\n        msg.payload = { error: 'Color not found with that UUID' };\n        return [null, msg];\n    }\n\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: \"Internal server error\", detail: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 420,
+        "wires": [
+            [
+                "c017f01b8ffbe7f6"
+            ],
+            [
+                "c0bb4d353492edb2"
+            ]
+        ]
+    },
+    {
+        "id": "c0ca278d38232159",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "20ffe12c52d1ba5f",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "formatar jwt",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Token not sent or poorly formatted' };\n    return [null, msg];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 280,
+        "wires": [
+            [
+                "b4d8d89682b6b05e"
+            ]
+        ]
+    },
+    {
+        "id": "b4d8d89682b6b05e",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 520,
+        "y": 280,
+        "wires": [
+            [
+                "8ad1dfed36db93df"
+            ]
+        ]
+    },
+    {
+        "id": "8ad1dfed36db93df",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 280,
+        "wires": [
+            [
+                "4a0b0b0dc399faa0"
+            ]
+        ]
+    },
+    {
+        "id": "51c7c5c359329ecb",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "formatar jwt",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Token not sent or poorly formatted' };\n    return [null, msg];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 420,
+        "wires": [
+            [
+                "f6d45c220d07565a"
+            ]
+        ]
+    },
+    {
+        "id": "f6d45c220d07565a",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 520,
+        "y": 420,
+        "wires": [
+            [
+                "cabff87933f0f218"
+            ]
+        ]
+    },
+    {
+        "id": "cabff87933f0f218",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 420,
+        "wires": [
+            [
+                "ba89a19d0ed113e0"
+            ]
+        ]
+    },
+    {
+        "id": "6c4e430d22fa9860",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "Gerar-log",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 240,
+        "wires": [
+            [
+                "9702f0003ce3f4c7"
+            ]
+        ]
+    },
+    {
+        "id": "c017f01b8ffbe7f6",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "Gerar-log",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 400,
+        "wires": [
+            [
+                "c0ca278d38232159"
+            ]
+        ]
+    },
+    {
+        "id": "2ac47b027aa16b6f",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "c0bb4d353492edb2",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "5563ed7c192de603",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "inserir-models",
+        "url": "/inserir-models",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 600,
+        "wires": [
+            [
+                "b8a3b50c7509f255"
+            ]
+        ]
+    },
+    {
+        "id": "51e1a492c022d2ca",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "inserir models",
+        "func": "try {\n    if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n        msg.statusCode = 403;\n        msg.payload = { error: 'Forbidden: Admin role required' };\n        return [null, msg];\n    }\n\n    let request = msg.request;\n    let models = global.get('modelsTable') || [];\n    \n    let nextId = 1;\n    if (models.length > 0) {\n        const ids = models.map(c => Number(c.uuid));\n        nextId = Math.max(...ids) + 1;\n    }\n\n    let modelExists = models.find(m => m.molorName === request.modelName);\n    if (modelExists) {\n        msg.statusCode = 200;\n        msg.payload = modelExists;\n        return [msg, null];\n    }\n\n    const newModel = {\n        uuid: nextId.toString(),\n        modelName: request.modelName\n    };\n\n    models.push(newModel);\n\n    flow.set('modelsTable', models);\n\n    msg.statusCode = 200;\n    msg.payload = newModel;\n    return [msg, null];\n\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: \"Internal server error\", detail: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 600,
+        "wires": [
+            [
+                "3906706aa1686722"
+            ],
+            [
+                "6d2fb08c7d5736c9"
+            ]
+        ]
+    },
+    {
+        "id": "de6ad926c65dfd7c",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "alterar-models",
+        "url": "/alterar-models",
+        "method": "put",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 680,
+        "wires": [
+            [
+                "169ff2e0e1a88b07"
+            ]
+        ]
+    },
+    {
+        "id": "e872bb5e089c4d98",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "c93ba2f4068ff115",
+        "type": "http in",
+        "z": "e771a27fee406b2a",
+        "name": "deletar-models-id",
+        "url": "/deletar-models-id",
+        "method": "delete",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 760,
+        "wires": [
+            [
+                "06c48ed6af1193bf"
+            ]
+        ]
+    },
+    {
+        "id": "bf1a15c0908c1518",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "73ac6b2c5e9f2d22",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "Gerar-log",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 320,
+        "wires": [
+            [
+                "7dd94797087764fb"
+            ]
+        ]
+    },
+    {
+        "id": "4c1e9af6ec577f99",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "51e80797b28c247c",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "formatar jwt",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Token not sent or poorly formatted' };\n    return [null, msg];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 340,
+        "wires": [
+            [
+                "4b3809d023865460"
+            ]
+        ]
+    },
+    {
+        "id": "4b3809d023865460",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 520,
+        "y": 340,
+        "wires": [
+            [
+                "2b48de9b1795ef97"
+            ]
+        ]
+    },
+    {
+        "id": "2b48de9b1795ef97",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 340,
+        "wires": [
+            [
+                "065f016ba0887085"
+            ]
+        ]
+    },
+    {
+        "id": "87f5bb005dd0f91b",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 540,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "b8a3b50c7509f255",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "formatar jwt",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Token not sent or poorly formatted' };\n    return [null, msg];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 600,
+        "wires": [
+            [
+                "dfa6e6351411a87d"
+            ]
+        ]
+    },
+    {
+        "id": "dfa6e6351411a87d",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 520,
+        "y": 600,
+        "wires": [
+            [
+                "a553f354b9fa5f7e"
+            ]
+        ]
+    },
+    {
+        "id": "a553f354b9fa5f7e",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 600,
+        "wires": [
+            [
+                "51e1a492c022d2ca"
+            ]
+        ]
+    },
+    {
+        "id": "acc3781946b27f0a",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "3906706aa1686722",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "Gerar-log",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 560,
+        "wires": [
+            [
+                "acc3781946b27f0a"
+            ]
+        ]
+    },
+    {
+        "id": "6d2fb08c7d5736c9",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "da6f96767d075d67",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "alterar-model",
+        "func": "try {\n    const request = msg.request;\n    const uuid = request.uuid;\n    const requiredFields = ['uuid', 'modelName'];\n    const missingFields = requiredFields.filter(field => !request[field]);\n\n    if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n        msg.statusCode = 403;\n        msg.payload = { error: 'Forbidden: Admin role required' };\n        return [null, msg];\n    }\n\n    if (missingFields.length > 0) {\n        msg.statusCode = 400;\n        msg.payload = { error: `Missing required fields: ${missingFields.join(', ')}` };\n        return [null, msg];\n    }\n\n    let models = global.get('modelsTable') || [];\n    if (!Array.isArray(models)) {\n        models = [];\n    }\n\n    let m = models.find(m => m.uuid === uuid);\n    if (m) {\n        request.uuid = uuid;\n\n        models = models.filter(i => i.uuid !== uuid);\n        models.push(request);\n        global.set('modelsTable', models);\n\n        msg.statusCode = 200;\n        msg.payload = { message: 'Model updated successfully', model: request };\n        return [msg, null];\n    } else {\n        msg.statusCode = 404;\n        msg.payload = { error: 'Model not found with that UUID' };\n        return [null, msg];\n    }\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: 'Internal server error', detail: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 680,
+        "wires": [
+            [
+                "e4e4a4ed304c9d2b"
+            ],
+            [
+                "e872bb5e089c4d98"
+            ]
+        ]
+    },
+    {
+        "id": "953483b566c3a317",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "e4e4a4ed304c9d2b",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "Gerar-log",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 660,
+        "wires": [
+            [
+                "953483b566c3a317"
+            ]
+        ]
+    },
+    {
+        "id": "169ff2e0e1a88b07",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "formatar jwt",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Token not sent or poorly formatted' };\n    return [null, msg];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 680,
+        "wires": [
+            [
+                "0f27392ba9407e0f"
+            ]
+        ]
+    },
+    {
+        "id": "0f27392ba9407e0f",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 520,
+        "y": 680,
+        "wires": [
+            [
+                "019bbfe1334563df"
+            ]
+        ]
+    },
+    {
+        "id": "019bbfe1334563df",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 680,
+        "wires": [
+            [
+                "da6f96767d075d67"
+            ]
+        ]
+    },
+    {
+        "id": "c9779db9cedefdf7",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "deletar-model",
+        "func": "try {\n    if (!msg.user || !msg.user.roles || !msg.user.roles.includes('ADMIN')) {\n        msg.statusCode = 403;\n        msg.payload = { error: 'Forbidden: Admin role required' };\n        return [null, msg];\n    }\n\n    const uuid = msg.request.uuid;\n    if (!uuid) {\n        msg.statusCode = 400;\n        msg.payload = { error: 'UUID not provided' };\n        return [null, msg];\n    }\n\n    let models = global.get('modelsTable') || [];\n    if (!Array.isArray(models)) {\n        models = [];\n    }\n\n    let model = models.find(m => m.uuid === uuid);\n    if (model) {\n        models = models.filter(c => c.uuid !== uuid);\n        global.set('modelsTable', models);\n        msg.statusCode = 200;\n        msg.payload = { success: true, message: 'Model successfully removed' };\n        return [msg, null];\n    } else {\n        msg.statusCode = 404;\n        msg.payload = { error: 'Model not found with that UUID' };\n        return [null, msg];\n    }\n\n} catch (err) {\n    msg.statusCode = 500;\n    msg.payload = { error: \"Internal server error\", detail: err.message };\n    return [null, msg];\n}\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 760,
+        "wires": [
+            [
+                "fa9a401ec71c32c3"
+            ],
+            [
+                "1b034d604e0d8d85"
+            ]
+        ]
+    },
+    {
+        "id": "06c48ed6af1193bf",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "formatar jwt",
+        "func": "msg.request = msg.payload\n\nvar authHeader = msg.req.headers['authorization'];\n\nif (authHeader && authHeader.startsWith(\"Bearer \")) {\n    msg.token = authHeader.substring(7);\n    msg.jwtSecret = \"minha_chave_secreta\";\n    return [msg, null];\n} else {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Token not sent or poorly formatted' };\n    return [null, msg];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 760,
+        "wires": [
+            [
+                "9aea69551f8c0ec9"
+            ]
+        ]
+    },
+    {
+        "id": "9aea69551f8c0ec9",
+        "type": "jwt verify",
+        "z": "e771a27fee406b2a",
+        "name": "Validar-Geracao-JWT",
+        "algorithms": "HS256",
+        "mode": "secret",
+        "secret": "jwtSecret",
+        "secretType": "msg",
+        "publicKey": "",
+        "publicKeyType": "str",
+        "jwkid": "",
+        "jwkidType": "str",
+        "jwkurl": "",
+        "jwkurlType": "str",
+        "ignoreExpiration": "false",
+        "ignoreExpirationType": "bool",
+        "ignoreNotBefore": "true",
+        "ignoreNotBeforeType": "bool",
+        "audience": "",
+        "audienceType": "str",
+        "issuer": "",
+        "issuerType": "str",
+        "token": "token",
+        "maxAge": "",
+        "maxAgeType": "num",
+        "constraints": [],
+        "x": 520,
+        "y": 760,
+        "wires": [
+            [
+                "a845811014d657a9"
+            ]
+        ]
+    },
+    {
+        "id": "a845811014d657a9",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "filtrar-roles",
+        "func": "const authHeader = msg.req.headers.authorization || '';\nconst token = authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { error: \"No token provided\" };\n    return [null, msg];\n}\n\nconst parts = token.split('.');\nif (parts.length !== 3) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Invalid token format\" };\n    return [null, msg];\n}\n\nconst payload = parts[1];\nconst decoded = Buffer.from(payload, 'base64').toString('utf8');\nconst data = JSON.parse(decoded);\n\nmsg.user = {\n    name: data.name,\n    roles: data.roles\n};\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 760,
+        "wires": [
+            [
+                "c9779db9cedefdf7"
+            ]
+        ]
+    },
+    {
+        "id": "fa9a401ec71c32c3",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "Gerar-log",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 740,
+        "wires": [
+            [
+                "bf1a15c0908c1518"
+            ]
+        ]
+    },
+    {
+        "id": "1b034d604e0d8d85",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1260,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "c9f68b992138402e",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "Gerar-log",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2580,
+        "y": 580,
+        "wires": [
+            [
+                "c24ce0c9eb711bba"
+            ]
+        ]
+    },
+    {
+        "id": "13ada1433c96a6b1",
+        "type": "http response",
+        "z": "e771a27fee406b2a",
+        "name": "Resposta-HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 2760,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "3d673acd3a0ca0db",
+        "type": "function",
+        "z": "e771a27fee406b2a",
+        "name": "Gerar-log",
+        "func": "const now = new Date().toISOString();\nconst userName = msg.user.name;\nconst route = msg.req.url;\n\nconst logEntry = `[${now}][${userName}][${route}]: ${JSON.stringify(msg.payload)}`;\n\nlet logs = flow.get(\"logs\") || [];\n\nlogs.push(logEntry);\n\nflow.set(\"logs\", logs);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 1100,
+        "wires": [
+            [
+                "849b98a3bb34bf09"
+            ]
+        ]
     }
 ]

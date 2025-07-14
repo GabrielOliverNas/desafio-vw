@@ -59,12 +59,6 @@ export default function AlterarVeiculo() {
           if (!data.veiculo) throw new Error("Veículo não encontrado");
 
           setVisualVeiculo(data.veiculo);
-          setFormVeiculo({
-            modelUuid: data.veiculo.model?.uuid || "",
-            colorUuid: data.veiculo.color?.uuid || "",
-            year: data.veiculo.year,
-            imagePath: data.veiculo.imagePath?.length ? data.veiculo.imagePath : [""]
-          });
         }
 
         const modelsRes = await fetch("http://localhost:1880/models", {
@@ -127,7 +121,6 @@ export default function AlterarVeiculo() {
         imagePath: formVeiculo.imagePath
       };
 
-      console.log(payload)
       const res = await fetch("http://localhost:1880/alterar-veiculo-id", {
         method: "PUT",
         headers: {
@@ -152,7 +145,7 @@ export default function AlterarVeiculo() {
       <Sidebar />
 
       <div style={{ display: "flex", gap: "2rem", width: "100%", justifyContent: "center", padding: "2rem" }}>
-        <div className="usuario">
+        <div className="veiculo">
           <h3>Visualização</h3>
           {visualVeiculo ? (
             <>
@@ -174,7 +167,7 @@ export default function AlterarVeiculo() {
           )}
         </div>
 
-        <div className="usuario">
+        <div className="veiculo">
           <form onSubmit={handleSubmit}>
             <h3>{isEditing ? "Editar Veículo" : "Cadastrar Veículo"}</h3>
 

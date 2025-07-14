@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Toast } from '../../componentes/utils/Toast';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -7,23 +8,46 @@ const Login: React.FC = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
 
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
+  const [showToast, setShowToast] = useState(false);
+
+
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => setShowToast(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:1880/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, password }),
-    });
+    try {
+      const response = await fetch('http://localhost:1880/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, password }),
+      });
 
-    if (response.ok) {
       const data = await response.json();
-      localStorage.setItem('token', data.token);
-      navigate('/dashboard');
-    } else {
-      alert('Usuário ou senha inválidos!');
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token || '');
+        navigate('/dashboard');
+      } else {
+        setToastMessage(data.error || 'Erro ao fazer login.');
+        setToastType('error');
+        setShowToast(true);
+      }
+
+    } catch (error: any) {
+      setToastMessage('Erro de conexão com o servidor.');
+      setToastType('error');
+      setShowToast(true);
     }
   };
+
 
   return (
     <div
@@ -33,8 +57,7 @@ const Login: React.FC = () => {
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
-      }}
-    >
+      }}>
       <form
         onSubmit={handleSubmit}
         style={{
@@ -102,6 +125,12 @@ const Login: React.FC = () => {
           Entrar
         </button>
       </form>
+
+      {showToast && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setShowToast(false)}/>)}
     </div>
   );
 };

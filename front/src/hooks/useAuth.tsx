@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 export function useAuth() {
-
-  const navigate = useNavigate();
-
   const getToken = (): string | null => {
-    const token = localStorage.getItem("Authorization");
+    const token = localStorage.getItem("token");
     return token && token !== "undefined" && token !== "null" ? token : null;
   };
 
@@ -17,49 +13,28 @@ export function useAuth() {
     if (!token) setRoles([]);
   }, [token]);
 
-  const saveTokenSession = (newToken: string, userRoles: string[] = []) => {
-    const cleanToken = newToken.startsWith("Bearer ") ? newToken.slice(7) : newToken;
-    localStorage.setItem("Authorization", cleanToken);
-    setToken(cleanToken);
-    setRoles(userRoles);
-  };
-
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
     setRoles([]);
   };
 
-  const isLoggedIn = () => !!token;
+  function getUserRoles() {
+    if (!token) return [];
 
-  const authHeader = token ? `Bearer ${token}` : "";
+    const payloadBase64 = token.split(".")[1];
+    const payload = JSON.parse(atob(payloadBase64));
 
-  async function fetchWithAuth(url: string, options: RequestInit = {}) {
-    const headers = {
-      ...(options.headers || {}),
-      Authorization: authHeader,
-      "Content-Type": "application/json",
-    };
-
-    try {
-      const response = await fetch(url, { ...options, headers });
-      if (response.status === 401) {
-        logout();
-        navigate("/login");
-        return null;
-      }
-      return response;
-    } catch (error) {
-      console.error("Fetch error:", error);
-      throw error;
-    }
+    return payload.roles || [];
   }
+
+  const isAdmin = getUserRoles().includes("ADMIN");
 
   return {
     getToken,
-    saveTokenSession,
     logout,
-    isLoggedIn,
-    fetchWithAuth,
+    token,
+    roles: getUserRoles(),
+    isAdmin
   };
 }

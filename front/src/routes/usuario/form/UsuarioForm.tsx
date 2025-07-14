@@ -10,7 +10,6 @@ interface User {
   password: string;
   isActived: string;
   isRoot: string;
-  roles: string[];
   creationDate: string;
   updateDate: string;
 }
@@ -27,7 +26,6 @@ export default function UsuarioForm() {
     password: "",
     isActived: "",
     isRoot: "",
-    roles: [],
     creationDate: "",
     updateDate: "",
   });
@@ -61,17 +59,6 @@ export default function UsuarioForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormUser((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const toggleRole = (role: string) => {
-    setFormUser((prev) => {
-      const hasRole = prev.roles.includes(role);
-      const updatedRoles = hasRole
-        ? prev.roles.filter((r) => r !== role)
-        : [...prev.roles, role];
-
-      return { ...prev, roles: updatedRoles };
-    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -124,10 +111,6 @@ export default function UsuarioForm() {
               <p><strong>Senha:</strong> {visualUser.password}</p>
               <p><strong>Ativo:</strong> {visualUser.isActived}</p>
               <p><strong>Administrador:</strong> {visualUser.isRoot}</p>
-              <p>
-                <strong>Roles:</strong>{" "}
-                {(visualUser.roles || []).join(", ")}
-              </p>
               <p><strong>Criado em:</strong> {new Date(visualUser.creationDate).toLocaleString()}</p>
               <p><strong>Atualizado em:</strong> {new Date(visualUser.updateDate).toLocaleString()}</p>
             </>
@@ -166,28 +149,7 @@ export default function UsuarioForm() {
 
             <fieldset className="permissoes-group">
               <legend>Permissões:</legend>
-
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={formUser.roles.includes("USER")}
-                  onChange={() => toggleRole("USER")}
-                />
-                USER
-              </label>
-
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={formUser.roles.includes("ADMIN")}
-                  onChange={() => toggleRole("ADMIN")}
-                />
-                ADMIN
-              </label>
-            </fieldset>
-
-            <div className="checkbox-inline-group">
-              <label className="checkbox-label">
+                <label className="checkbox-label">
                 <input
                   type="checkbox"
                   checked={formUser.isActived === "true"}
@@ -214,7 +176,7 @@ export default function UsuarioForm() {
                 />
                 Administrador
               </label>
-            </div>
+            </fieldset>
 
             <button type="submit">
               {isEditing ? "Salvar Alterações" : "Cadastrar"}

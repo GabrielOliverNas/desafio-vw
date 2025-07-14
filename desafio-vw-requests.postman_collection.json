@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "fd612ce6-e77e-454c-bf28-f876f0e34e4e",
-		"name": "desafio-vw-requests",
+		"_postman_id": "c54a8d93-3200-481a-8810-8fbbca58aeb3",
+		"name": "desafio-vw-requests Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "10396721",
-		"_collection_link": "https://winter-shuttle-106151.postman.co/workspace/nodejs~6f98dcb8-e1cb-402b-87be-630646eff76a/collection/10396721-fd612ce6-e77e-454c-bf28-f876f0e34e4e?action=share&source=collection_link&creator=10396721"
+		"_collection_link": "https://winter-shuttle-106151.postman.co/workspace/nodejs~6f98dcb8-e1cb-402b-87be-630646eff76a/collection/10396721-c54a8d93-3200-481a-8810-8fbbca58aeb3?action=share&source=collection_link&creator=10396721"
 	},
 	"item": [
 		{
@@ -36,7 +36,7 @@
 					"response": []
 				},
 				{
-					"name": "usuario_id",
+					"name": "usuario",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -48,7 +48,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"uuid\": \"1751991911160\"\r\n}",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"admin\",\r\n    \"isActived\": false,\r\n    \"isRoot\": false,\r\n    \"roles\": [\"ADMIN\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -56,14 +56,49 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1880/usuario-id",
+							"raw": "http://localhost:1880/inserir-usuario",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1880",
 							"path": [
-								"usuario-id"
+								"inserir-usuario"
+							]
+						},
+						"description": "Adicionando usuarios no banco de dados"
+					},
+					"response": []
+				},
+				{
+					"name": "usuario_id",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2FicmllbCIsInJvbGVzIjpbIlVTRVIiLCJBRE1JTiJdLCJpYXQiOjE3NTE5OTI3NzQsImV4cCI6MTc1MTk5NjM3NH0.zfKb3mbK2xfsbXVA5LYNjZsUf0zzx1Bm1mWTe-_rS74",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uuid\": \"1751994020667\",\r\n    \"name\": \"asdfaasdfasdfsdf\",\r\n    \"password\": \"123\",\r\n    \"isActived\": \"true\",\r\n    \"isRoot\": \"true\",\r\n    \"roles\": [\r\n        \"USER\",\r\n        \"ADMIN\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/alterar-usuario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"alterar-usuario"
 							]
 						}
 					},
@@ -106,40 +141,6 @@
 				{
 					"name": "usuario_id",
 					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2FicmllbCIsInJvbGVzIjpbIlVTRVIiLCJBRE1JTiJdLCJpYXQiOjE3NTE5OTI3NzQsImV4cCI6MTc1MTk5NjM3NH0.zfKb3mbK2xfsbXVA5LYNjZsUf0zzx1Bm1mWTe-_rS74",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"uuid\": \"1751994020667\",\r\n    \"name\": \"asdfaasdfasdfsdf\",\r\n    \"password\": \"123\",\r\n    \"isActived\": \"true\",\r\n    \"isRoot\": \"true\",\r\n    \"roles\": [\r\n        \"USER\",\r\n        \"ADMIN\"\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:1880/alterar-usuario",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "1880",
-							"path": [
-								"alterar-usuario"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "usuario",
-					"request": {
 						"method": "POST",
 						"header": [
 							{
@@ -150,7 +151,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"admin\",\r\n    \"isActived\": false,\r\n    \"isRoot\": false,\r\n    \"roles\": [\"ADMIN\"]\r\n}",
+							"raw": "{\r\n    \"uuid\": \"1751991911160\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -158,17 +159,16 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1880/inserir-usuario",
+							"raw": "http://localhost:1880/usuario-id",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1880",
 							"path": [
-								"inserir-usuario"
+								"usuario-id"
 							]
-						},
-						"description": "Adicionando usuarios no banco de dados"
+						}
 					},
 					"response": []
 				}
@@ -278,6 +278,40 @@
 					"response": []
 				},
 				{
+					"name": "alterar-veiculo-id",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJBRE1JTiJdLCJpYXQiOjE3NTIwMDE0NTQsImV4cCI6MTc1MjAwNTA1NH0.DzojQ30-4gQLxosBgWFOZh1fC1CIb_CzpgmVIYlhbwo",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uuid\": \"1752001604016\",\r\n    \"modelUuid\": \"formVeiculo.modelUuid\",\r\n    \"colorUuid\": \"preto\",\r\n    \"year\": 2025,\r\n    \"imagePath\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1880/alterar-veiculo-id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1880",
+							"path": [
+								"alterar-veiculo-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "listar-veiculo-id",
 					"request": {
 						"method": "POST",
@@ -306,40 +340,6 @@
 							"port": "1880",
 							"path": [
 								"listar-veiculo-id"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "alterar-veiculo-id",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJBRE1JTiJdLCJpYXQiOjE3NTIwMDE0NTQsImV4cCI6MTc1MjAwNTA1NH0.DzojQ30-4gQLxosBgWFOZh1fC1CIb_CzpgmVIYlhbwo",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"uuid\": \"1752001604016\",\r\n    \"modelUuid\": \"formVeiculo.modelUuid\",\r\n    \"colorUuid\": \"preto\",\r\n    \"year\": 2025,\r\n    \"imagePath\": []\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:1880/alterar-veiculo-id",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "1880",
-							"path": [
-								"alterar-veiculo-id"
 							]
 						}
 					},

@@ -72,34 +72,15 @@
   gap: 0.5rem;
 }
 
+.flags-group {
+  text-align: center;
+}
+
+
 .center-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
   padding: 2rem;
   box-sizing: border-box;
-}
-
-.flags-group {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  border: none;
-  text-align: center;
-}
-
-.flag-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.flag-item input[type="checkbox"] {
-  transform: scale(1.4);
-  margin-bottom: 0.25rem;
-}
-
-.flag-item label {
-  font-weight: 600;
 }

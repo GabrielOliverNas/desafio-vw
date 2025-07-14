@@ -18,5 +18,6 @@ services:
       - "1880:1880"
     volumes:
       - ./back:/data
+      - ./back/uploads:/data/uploads
     environment:
       - TZ=America/Sao_Paulo

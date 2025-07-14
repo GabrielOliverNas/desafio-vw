@@ -2,27 +2,21 @@ import { useState } from "react";
 import Sidebar from "../../../componentes/sidebar/Sidebar";
 import Navbar from "../../../componentes/navbar/Navibar";
 import { Toast } from "../../../componentes/utils/Toast";
-import "../Usuario.css";
+import "./CadastrarUsuario.css";
 import { useNavigate } from "react-router-dom";
 
 export default function CadastrarUsuario() {
   const [name, setName] = useState("");
-  const [password, setPasswor] = useState("");
+  const [password, setPassword] = useState("");
   const [isAdminFlag, setIsAdminFlag] = useState(false);
   const [isActiveFlag, setIsActiveFlag] = useState(true);
-  const [permissoes, setPermissoes] = useState<string[]>([]);
 
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState<"success" | "error">("success");
+
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
   const [showToast, setShowToast] = useState(false);
 
   const navigate = useNavigate();
-
-  function togglePermissao(role: string) {
-    setPermissoes((prev) =>
-      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
-    );
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,11 +25,8 @@ export default function CadastrarUsuario() {
       name: name,
       password: password,
       isActived: isActiveFlag ? "true" : "false",
-      isRoot: isAdminFlag ? "true" : "false",
-      roles: permissoes,
+      isRoot: isAdminFlag ? "ADMIN" : "USER"
     };
-
-    console.log(payload)
 
     try {
 
@@ -55,21 +46,25 @@ export default function CadastrarUsuario() {
         body: JSON.stringify(payload),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
         setToastMessage("Usuário cadastrado com sucesso!");
         setToastType("success");
         setShowToast(true);
 
         setName("");
-        setPasswor("");
+        setPassword("");
         setIsAdminFlag(false);
         setIsActiveFlag(true);
-        setPermissoes([]);
       } else {
-        throw new Error();
+        setToastMessage(data.error || "Falha ao cadastrar usuário");
+        setToastType("error");
+        setShowToast(true);
       }
-    } catch {
-      setToastMessage("Falha ao cadastrar usuário");
+    }
+    catch (err) {
+      setToastMessage("Erro de conexão ou servidor indisponível");
       setToastType("error");
       setShowToast(true);
     }
@@ -100,7 +95,7 @@ export default function CadastrarUsuario() {
               <input
                 type="password"
                 value={password}
-                onChange={(e) => setPasswor(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="Digite o password"
               />
@@ -108,27 +103,6 @@ export default function CadastrarUsuario() {
 
             <fieldset className="flags-group">
               <legend>Permissões:</legend>
-              <div className="flag-item">
-                <input
-                  type="checkbox"
-                  id="USER"
-                  checked={permissoes.includes("USER")}
-                  onChange={() => togglePermissao("USER")}
-                  />
-                <label htmlFor="USER">USER</label>
-              </div>
-              <div className="flag-item">
-                <input
-                  type="checkbox"
-                  id="admin"
-                  checked={permissoes.includes("ADMIN")}
-                  onChange={() => togglePermissao("ADMIN")}
-                  />
-                <label htmlFor="ADMIN">ADMIN</label>
-              </div>
-            </fieldset>
-
-            <div className="flag-item">
                 <input
                   type="checkbox"
                   id="ativo"
@@ -136,9 +110,7 @@ export default function CadastrarUsuario() {
                   onChange={(e) => setIsActiveFlag(e.target.checked)}
                 />
                 <label htmlFor="ativo">Ativo</label>
-              </div>
 
-              <div className="flag-item">
                 <input
                   type="checkbox"
                   id="admin"
@@ -146,7 +118,8 @@ export default function CadastrarUsuario() {
                   onChange={(e) => setIsAdminFlag(e.target.checked)}
                 />
                 <label htmlFor="admin">Administrador</label>
-              </div>
+
+            </fieldset>
 
             <button type="submit">Cadastrar</button>
           </form>

@@ -5,7 +5,6 @@ import { Toast } from "../../../componentes/utils/Toast";
 import "./CadastrarVeiculo.css";
 import { useNavigate } from "react-router-dom";
 
-
 interface Option {
   uuid: string;
   modelName?: string;
@@ -13,10 +12,6 @@ interface Option {
 }
 
 export default function CadastrarVeiculo() {
-  const [modelo, setModelo] = useState("");
-  const [cor, setCor] = useState("");
-  const [ano, setAno] = useState(new Date().getFullYear());
-  const [fotoUrl, setFotoUrl] = useState("");
 
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState<"success" | "error">("success");
@@ -24,6 +19,13 @@ export default function CadastrarVeiculo() {
 
   const [models, setModels] = useState<Option[]>([]);
   const [colors, setColors] = useState<Option[]>([]);
+
+  const [formVeiculo, setFormVeiculo] = useState({
+    modelUuid: "",
+    colorUuid: "",
+    year: new Date().getFullYear(),
+    imagePath: [""]
+  });
 
   const navigate = useNavigate();
 
@@ -51,16 +53,32 @@ export default function CadastrarVeiculo() {
     fetchData();
   }, [navigate]);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormVeiculo((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImagePathChange = (index: number, value: string) => {
+    const updated = [...formVeiculo.imagePath];
+    updated[index] = value;
+    setFormVeiculo((prev) => ({ ...prev, imagePath: updated }));
+  };
+
+  const addImageField = () => {
+    setFormVeiculo((prev) => ({
+      ...prev,
+      imagePath: [...prev.imagePath, ""]
+      })); 
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const payload = {
-      modelName: modelo,
-      colorName: cor,
-      year: ano,
-      imagePath: [fotoUrl],
-      creationUserName: "nome logado JWT",
+      modelUuid: formVeiculo.modelUuid,
+      colorUuid: formVeiculo.colorUuid,
+      year: Number(formVeiculo.year),
+      imagePath: formVeiculo.imagePath
     };
 
     try {
@@ -80,19 +98,19 @@ export default function CadastrarVeiculo() {
       });
 
       if (res.ok) {
+        setFormVeiculo({
+          modelUuid: "",
+          colorUuid: "",
+          year: new Date().getFullYear(),
+          imagePath: [""]
+        });
         setToastMessage("Veículo cadastrado com sucesso!");
         setToastType("success");
         setShowToast(true);
-
-        setModelo("");
-        setCor("");
-        setAno(new Date().getFullYear());
-        setFotoUrl("");
       } else {
         throw new Error();
       }
     } catch (err) {
-      console.error(err);
       setToastMessage("Falha ao cadastrar veículo");
       setToastType("error");
       setShowToast(true);
@@ -107,38 +125,24 @@ export default function CadastrarVeiculo() {
       <Sidebar />
 
       <div className="center-wrapper">
-        <div className="usuario">
-          <form onSubmit={handleSubmit}>       
+        <div className="veiculo">
+          <form onSubmit={handleSubmit}>
             <label>
               Modelo:
-              <select
-                name="modelUuid"
-                value={modelo}
-                onChange={(e) => setModelo(e.target.value)}
-                required
-              >
+              <select name="modelUuid" value={formVeiculo.modelUuid} onChange={handleChange} required>
                 <option value="">Selecione</option>
                 {models.map((m) => (
-                  <option key={m.uuid} value={m.uuid}>
-                    {m.modelName}
-                  </option>
+                  <option key={m.uuid} value={m.uuid}>{m.modelName}</option>
                 ))}
               </select>
             </label>
 
             <label>
               Cor:
-              <select
-                name="colorUuid"
-                value={cor}
-                onChange={(e) => setCor(e.target.value)}
-                required
-              >
+              <select name="colorUuid" value={formVeiculo.colorUuid} onChange={handleChange} required>
                 <option value="">Selecione</option>
                 {colors.map((c) => (
-                  <option key={c.uuid} value={c.uuid}>
-                    {c.colorName}
-                  </option>
+                  <option key={c.uuid} value={c.uuid}>{c.colorName}</option>
                 ))}
               </select>
             </label>
@@ -147,29 +151,34 @@ export default function CadastrarVeiculo() {
               Ano:
               <input
                 type="number"
-                value={ano}
-                onChange={(e) => setAno(Number(e.target.value))}
+                name="year"
+                value={formVeiculo.year}
                 min="1900"
                 max={new Date().getFullYear() + 1}
+                onChange={handleChange}
                 required
-                placeholder="Digite o ano"
               />
             </label>
 
             <label>
-              URL da Foto:
-              <input
-                type="url"
-                value={fotoUrl}
-                onChange={(e) => setFotoUrl(e.target.value)}
-                placeholder="https://servidor.com/foto.jpg"
-                required
-              />
+              URLs das Imagens:
+              {formVeiculo.imagePath.map((url, index) => (
+                <input
+                  key={index}
+                  type="url"
+                  value={url}
+                  onChange={(e) => handleImagePathChange(index, e.target.value)}
+                  placeholder="https://..."
+                  style={{ marginBottom: "0.5rem" }}
+                />
+              ))}
+              <button type="button" onClick={addImageField}>+ Adicionar Imagem</button>
             </label>
 
-            <button type="submit">Cadastrar Veículo</button>
+            <button type="submit">
+              {"Salvar Alterações"}
+            </button>
           </form>
-        </div>
       </div>
 
 
@@ -180,6 +189,7 @@ export default function CadastrarVeiculo() {
           onClose={() => setShowToast(false)}
         />
       )}
+      </div>
     </div>
   );
 }

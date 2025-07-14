@@ -9,7 +9,7 @@
   align-items: flex-start;
 }
 
-.usuario {
+.veiculo {
   background: #fff;
   border: 2px solid #0074D9;
   border-radius: 8px;
@@ -19,18 +19,18 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.usuario form {
+.veiculo form {
   display: flex;
   flex-direction: column;
 }
 
-.usuario label {
+.veiculo label {
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
-.usuario input,
-.usuario select {
+.veiculo input,
+.veiculo select {
   padding: 0.5rem;
   margin-top: 0.25rem;
   border: 1px solid #ccc;
@@ -39,7 +39,7 @@
   box-sizing: border-box;
 }
 
-.usuario button {
+.veiculo button {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
   background: #0074D9;
@@ -51,7 +51,7 @@
   transition: background 0.2s ease;
 }
 
-.usuario button:hover {
+.veiculo button:hover {
   background: #005fa3;
 }
 

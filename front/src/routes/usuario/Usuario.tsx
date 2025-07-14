@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../componentes/sidebar/Sidebar";
 import Navbar from "../../componentes/navbar/Navibar";
 import "./Usuario.css";
+import { useAuth } from "../../hooks/useAuth";
 
 interface User {
   uuid: string;
@@ -10,14 +11,14 @@ interface User {
   password: string;
   isActived: boolean;
   isRoot: boolean;
-  roles: string[];
   creationDate: string;
   updateDate?: string;
 }
 
 export default function Usuario() {
-  const [usuarios, setUsuarios] = useState<User[]>([]);
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
+  const [usuarios, setUsuarios] = useState<User[]>([]);
 
   useEffect(() => {
     async function fetchUsuarios() {
@@ -99,10 +100,11 @@ export default function Usuario() {
                 <th>Senha</th>
                 <th>Ativo</th>
                 <th>Administrador</th>
-                <th>Roles</th>
                 <th>Criado em</th>
                 <th>Atualizado em</th>
-                <th>Ações</th>
+                {isAdmin && (
+                  <th>Ações</th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -112,17 +114,18 @@ export default function Usuario() {
                   <td>{user.password}</td>
                   <td>{user.isActived}</td>
                   <td>{user.isRoot}</td>
-                  <td>{(user.roles || []).join(", ")}</td>
                   <td>{new Date(user.creationDate).toLocaleString()}</td>
                   <td>{new Date(user.updateDate || user.creationDate).toLocaleString()}</td>
-                  <td>
-                    <button onClick={() => handleEditar(user.uuid)} className="btn-editar">
-                      🖉
-                    </button>
-                    <button onClick={() => handleExcluir(user.uuid)} className="btn-excluir">
-                      🗑️
-                    </button>
-                  </td>
+                  {isAdmin && (
+                    <td>
+                      <button onClick={() => handleEditar(user.uuid)} className="btn-editar">
+                        🖉
+                      </button>
+                      <button onClick={() => handleExcluir(user.uuid)} className="btn-excluir">
+                        🗑️
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

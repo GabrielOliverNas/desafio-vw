@@ -1,0 +1,3 @@
+String imagePath (O arquivo deve ser armazenado localmente com acesso HTTP estatico)
+ByScrpt
+Permitir upload da foto do veiculo
